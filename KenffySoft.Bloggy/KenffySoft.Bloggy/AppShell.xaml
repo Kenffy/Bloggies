@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Shell xmlns="http://xamarin.com/schemas/2014/forms" 
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:local="clr-namespace:KenffySoft.Bloggy.Views"
+       xmlns:users="clr-namespace:KenffySoft.Bloggy.Views.Users"
+       xmlns:helpers="clr-namespace:KenffySoft.Bloggy.Helpers"
+       Title="KenffySoft.Bloggy"
+       x:Class="KenffySoft.Bloggy.AppShell">
+
+    <!--
+        The overall app visual hierarchy is defined here, along with navigation.
+    
+        https://docs.microsoft.com/xamarin/xamarin-forms/app-fundamentals/shell/
+    -->
+
+    <Shell.Resources>
+        <ResourceDictionary>
+            <Style x:Key="BaseStyle" TargetType="Element">
+                <Setter Property="Shell.BackgroundColor" Value="#FFFEFF" />
+                <Setter Property="Shell.ForegroundColor" Value="Black" />
+                <Setter Property="Shell.TitleColor" Value="Black" />
+                <Setter Property="Shell.DisabledColor" Value="#B4FFFFFF" />
+                <Setter Property="Shell.UnselectedColor" Value="#B4B4BA" />
+                <Setter Property="Shell.TabBarBackgroundColor" Value="{StaticResource TabBarBackground}" />
+                <!--<Setter Property="Shell.TabBarForegroundColor" Value="{StaticResource TabIconSelected}" />-->
+                <Setter Property="Shell.TabBarUnselectedColor" Value="{StaticResource TabIconUnselected}" />
+                <Setter Property="Shell.TabBarTitleColor" Value="{StaticResource TabIconSelected}" />
+            </Style>
+            <Style TargetType="TabBar" BasedOn="{StaticResource BaseStyle}" />
+            <Style TargetType="FlyoutItem" BasedOn="{StaticResource BaseStyle}" />
+        </ResourceDictionary>
+    </Shell.Resources>
+
+    <TabBar>
+        <Tab Title="Home"
+             Route="HomePage"
+             Shell.NavBarIsVisible="True"
+             Shell.TitleColor="{StaticResource TabIconSelected}"
+             >
+            <Tab.Icon>
+                <FontImageSource FontFamily="FASolid"
+                                     Glyph="{x:Static helpers:BloggyIcon.Home}"/>
+            </Tab.Icon>
+            <ShellContent
+                ContentTemplate="{DataTemplate local:HomePage}"/>
+        </Tab>
+
+        <Tab Title="Connections"
+             Route="BloggiesPage"
+             Shell.NavBarIsVisible="True"
+             Shell.TitleColor="{StaticResource TabIconSelected}"
+             >
+            <Tab.Icon>
+                <FontImageSource FontFamily="FASolid"
+                                     Glyph="{x:Static helpers:BloggyIcon.UserFriends}"/>
+            </Tab.Icon>
+            <ShellContent
+                ContentTemplate="{DataTemplate local:BloggiesPage}"/>
+        </Tab>
+
+        <Tab Title="Search"
+             Route="SearchPage"
+             Shell.NavBarIsVisible="True"
+             Shell.TitleColor="{StaticResource TabIconSelected}"
+             >
+            <Tab.Icon>
+                <FontImageSource FontFamily="FASolid"
+                                     Glyph="{x:Static helpers:BloggyIcon.Search}"/>
+            </Tab.Icon>
+            <ShellContent
+                ContentTemplate="{DataTemplate local:SearchPage}"/>
+        </Tab>
+
+        <Tab Title="Posts"
+             Route="PostPage"
+             Shell.NavBarIsVisible="True"
+             Shell.TitleColor="{StaticResource TabIconSelected}"
+             >
+            <Tab.Icon>
+                <FontImageSource FontFamily="FASolid"
+                                     Glyph="{x:Static helpers:BloggyIcon.Edit}"/>
+            </Tab.Icon>
+            <ShellContent
+                ContentTemplate="{DataTemplate local:PostPage}"/>
+        </Tab>
+
+        <Tab Title="Settings"
+             Route="SettingsPage"
+             Shell.NavBarIsVisible="True"
+             Shell.TitleColor="{StaticResource TabIconSelected}"
+             >
+            <Tab.Icon>
+                <FontImageSource FontFamily="FASolid"
+                                     Glyph="{x:Static helpers:BloggyIcon.User}"/>
+            </Tab.Icon>
+            <ShellContent
+                ContentTemplate="{DataTemplate local:SettingsPage}"/>
+
+            <!--<ShellContent
+                ContentTemplate="{DataTemplate local:ProfilePage}"/>-->
+        </Tab>
+
+        <!--<Tab Title="More"
+             Route="SettingsPage"
+             Shell.NavBarIsVisible="False"
+             Shell.TitleColor="{StaticResource TabIconSelected}"
+             >
+            <Tab.Icon>
+                <FontImageSource FontFamily="FASolid"
+                                     Glyph="{x:Static helpers:BloggyIcon.GripLines}"/>
+            </Tab.Icon>
+            <ShellContent
+                ContentTemplate="{DataTemplate local:SettingsPage}"/>
+        </Tab>-->
+    </TabBar>
+
+    <!--
+        If you would like to navigate to this content you can do so by calling
+        await Shell.Current.GoToAsync("//LoginPage");
+    -->
+    <TabBar>
+        <ShellContent Route="LoginPage" ContentTemplate="{DataTemplate local:LoginPage}" />
+        <ShellContent Route="RegisterPage" ContentTemplate="{DataTemplate local:RegisterPage}" />
+        <ShellContent Route="ForgotPasswordPage" ContentTemplate="{DataTemplate local:ForgotPasswordPage}" />
+        <ShellContent Route="AboutPage" ContentTemplate="{DataTemplate local:AboutPage}" />
+        <ShellContent Route="EditProfilePage" ContentTemplate="{DataTemplate local:EditProfilePage}" />
+        <ShellContent Route="PostDetailPage" ContentTemplate="{DataTemplate local:PostDetailPage}" />
+        <ShellContent Route="SettingsPage" ContentTemplate="{DataTemplate local:SettingsPage}" />
+        <ShellContent Route="ConnectionsPage" ContentTemplate="{DataTemplate local:ConnectionsPage}" />
+        <ShellContent Route="InvitationsPage" ContentTemplate="{DataTemplate local:InvitationsPage}" />
+        <ShellContent Route="PostsPage" ContentTemplate="{DataTemplate users:PostsPage}" />
+        <ShellContent Route="FollowersPage" ContentTemplate="{DataTemplate users:FollowersPage}" />
+        <ShellContent Route="FollowingPage" ContentTemplate="{DataTemplate users:FollowingPage}" />
+    </TabBar>
+
+
+</Shell>

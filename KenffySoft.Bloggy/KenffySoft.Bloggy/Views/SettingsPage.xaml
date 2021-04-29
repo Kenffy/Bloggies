@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:vm="clr-namespace:KenffySoft.Bloggy.ViewModels" 
+             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             x:Class="KenffySoft.Bloggy.Views.SettingsPage"
+             Title="{Binding SettingsTitle}"
+             Shell.TabBarIsVisible="True">
+
+    <ContentPage.BindingContext>
+        <vm:SettingsViewModel />
+    </ContentPage.BindingContext>
+
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout>
+                <Grid VerticalOptions="FillAndExpand">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackLayout>
+                        <ff:CachedImage x:Name="ProfileImage" 
+                                Aspect="AspectFill"
+                                HeightRequest="350" 
+                                VerticalOptions="StartAndExpand"
+                                Source="{Binding CurrentUser.ProfileImage}"/>
+
+                        <StackLayout.GestureRecognizers>
+                            <TapGestureRecognizer x:Name="OnDisplayImage" Command="{Binding DisplayImageCommand}"/>
+                        </StackLayout.GestureRecognizers>
+                    </StackLayout>
+
+                    <Frame Grid.Row="1" HasShadow="True" 
+                           CornerRadius="50" Margin="20,-40,20,0"
+                           BorderColor="{StaticResource Accent}"
+                   Padding="0" HeightRequest="60" 
+                   WidthRequest="60"
+                   VerticalOptions="Start"
+                   HorizontalOptions="EndAndExpand">
+                        <Image Source="edit.png" Aspect="AspectFit" 
+                       VerticalOptions="CenterAndExpand"
+                       HeightRequest="35">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer x:Name="OnEditProfile" Command="{Binding EditProfileCommand}"/>
+                            </Image.GestureRecognizers>
+                        </Image>
+
+                    </Frame>
+
+
+                    <StackLayout x:Name="Actions"
+                         Grid.Row="2" Margin="20,0" 
+                         VerticalOptions="FillAndExpand" 
+                         HorizontalOptions="FillAndExpand">
+
+                        <StackLayout Margin="0,10">
+                            <Label x:Name="lbMemberName" TextColor="{StaticResource Accent}" 
+                               FontSize="24" FontAttributes="Bold" 
+                               VerticalOptions="Center" Margin="0,5"
+                               Text="{Binding CurrentUser.Name}"/>
+                            <Label x:Name="lbEmail" TextColor="{StaticResource TextPrimary}"  
+                               FontSize="Medium" VerticalOptions="Center" 
+                               Margin="0,5"
+                               Text="{Binding CurrentUser.Email}"/>
+                            <Label x:Name="lbRole" TextColor="{StaticResource TextPrimary}"  
+                               FontSize="Medium" VerticalOptions="Center" 
+                               Margin="0,5"
+                               Text="{Binding CurrentUser.Role}"/>
+                        </StackLayout>
+
+                        <StackLayout>
+                            <Label Text="About me" TextColor="{StaticResource Accent}" 
+                                   FontSize="20" FontAttributes="Bold" Margin="0,10"/>
+                            <Label x:Name="lbDescription" TextColor="{StaticResource TextPrimary}" 
+                                   FontSize="Medium" 
+                               Text="{Binding CurrentUser.Description}"/>
+                        </StackLayout>
+                    </StackLayout>
+                </Grid>
+
+                <StackLayout>
+                    <TableView Intent="Settings" HeightRequest="300"
+                               VerticalOptions="EndAndExpand">
+                        <TableRoot>
+                            <TableSection>
+                                <ViewCell>
+                                    <Label Text="HELPS" Margin="20,10"
+                                       FontSize="Medium" FontAttributes="Bold"
+                                       VerticalOptions="CenterAndExpand"
+                                       TextColor="{StaticResource Accent}"/>
+                                </ViewCell>
+                                <ViewCell>
+                                    <Label Text="Profile Preview" Margin="20,10"
+                                       FontSize="Medium"
+                                       VerticalOptions="CenterAndExpand"
+                                       TextColor="{StaticResource Accent}">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding AboutCommand}"/>
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                </ViewCell>
+                                <ViewCell>
+                                    <Label Text="Reset Password" Margin="20,10"
+                                       FontSize="Medium"
+                                       VerticalOptions="CenterAndExpand"
+                                       TextColor="{StaticResource Accent}">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding ResetPasswordCommand}"/>
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                </ViewCell>
+                                <ViewCell>
+                                    <Label Text="Log Out" Margin="20,10"
+                                       FontSize="Medium"
+                                       VerticalOptions="CenterAndExpand"
+                                       TextColor="{StaticResource Accent}">
+                                        <Label.GestureRecognizers>
+                                            <TapGestureRecognizer Command="{Binding LogOutCommand}"/>
+                                        </Label.GestureRecognizers>
+                                    </Label>
+                                </ViewCell>
+                            </TableSection>
+                        </TableRoot>
+                    </TableView>
+                </StackLayout>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

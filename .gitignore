@@ -1,0 +1,7 @@
+obj
+bin
+BloggyConstant.cs
+*.suo
+*.dtbcache
+*.dtbcache.v2
+*.png

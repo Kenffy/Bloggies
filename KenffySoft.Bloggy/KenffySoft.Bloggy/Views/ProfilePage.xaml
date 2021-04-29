@@ -1,0 +1,237 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:vm="clr-namespace:KenffySoft.Bloggy.ViewModels" 
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+             x:Class="KenffySoft.Bloggy.Views.ProfilePage"
+             Title="Davx">
+
+    <ContentPage.BindingContext>
+        <vm:ProfileViewModel />
+    </ContentPage.BindingContext>
+
+    <ContentPage.Content>
+        <ScrollView BackgroundColor="LightGray">
+            <StackLayout Spacing="8">
+                <Grid VerticalOptions="FillAndExpand"
+                      BackgroundColor="White">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <BoxView x:Name="ProfileImage"
+                       BackgroundColor="LightGray"
+                       HeightRequest="120" VerticalOptions="StartAndExpand"/>
+
+                    <Frame Grid.Row="1" HasShadow="False" 
+                           CornerRadius="60" Margin="20,-60,20,0"
+                            Padding="0" HeightRequest="120" 
+                            WidthRequest="120"
+                            VerticalOptions="Start"
+                            HorizontalOptions="StartAndExpand">
+                        <xct:AvatarView 
+                            HorizontalOptions="CenterAndExpand"
+                            VerticalOptions="CenterAndExpand"
+                            Text="D"  
+                            Source="{Binding ProfileImage}"  
+                            Color="Green" 
+                            TextColor="White" 
+                            Size="{OnPlatform iOS='60', Android='116'}"
+                            x:Name="PostAvatar"/>
+
+                    </Frame>
+
+
+                    <StackLayout x:Name="Actions"
+                         Grid.Row="2" Margin="5,0" 
+                         VerticalOptions="FillAndExpand" 
+                         HorizontalOptions="FillAndExpand">
+
+                        <StackLayout Margin="15,5" Spacing="5">
+                            <Label x:Name="lbMemberName" Text="Davx"
+                                   TextColor="{StaticResource TextPrimary}" 
+                                   FontSize="24" FontAttributes="Bold" 
+                                   VerticalOptions="Center"/>
+
+                            <Label x:Name="lbRole" Text="Description"
+                                   TextColor="{StaticResource TextPrimary}" 
+                                   FontSize="Medium" VerticalOptions="Center" 
+                                   />
+
+                            <Label x:Name="lbEmail" Text="davx@gmail.com"
+                                   TextColor="{StaticResource TextPrimary}" 
+                                   FontSize="Medium" VerticalOptions="Center" 
+                                   />
+                        </StackLayout>
+
+                        <StackLayout>
+                            <Frame BorderColor="{StaticResource TabIconSelected}" 
+                                        CornerRadius="{OnPlatform iOS='20', Android='30'}"
+                                        HasShadow="{OnPlatform iOS='False', Android='True'}"
+                                        Grid.Row="4" Padding="5"
+                                        Margin="{OnPlatform iOS='15', Android='20'}"
+                                        VerticalOptions="CenterAndExpand">
+
+                                <Label Text="Edit Profile" x:Name="lbEditProfile"
+                                            FontSize="{OnPlatform iOS='15', Android='Medium'}" 
+                                            Padding="5"
+                                            VerticalOptions="Center"
+                                            Margin="0" HorizontalTextAlignment="Center"
+                                            TextColor="{StaticResource TabIconSelected}">
+
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding EditCommand}"/>
+                                    </Label.GestureRecognizers>
+
+                                </Label>
+                            </Frame>
+                        </StackLayout>
+                    </StackLayout>
+                </Grid>
+
+
+                <Frame Padding="8" VerticalOptions="Start">
+                    <Grid HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackLayout Orientation="Vertical" Spacing="5" HorizontalOptions="CenterAndExpand">
+                            <StackLayout Spacing="7" HorizontalOptions="CenterAndExpand">
+                                <Label Text="Posts" 
+                                       TextColor="{StaticResource TextPrimary}" 
+                                       FontSize="Medium" 
+                                       HorizontalOptions="Center"/>
+                                <Label x:Name="lbNumPosts" Text="23"
+                                       TextColor="#7D7D7D" FontSize="15" 
+                                       HorizontalOptions="Center"/>
+                            </StackLayout>
+                        </StackLayout>
+                        <StackLayout Grid.Column="1" Orientation="Vertical" Spacing="5" HorizontalOptions="CenterAndExpand">
+                            <StackLayout Spacing="7" HorizontalOptions="CenterAndExpand">
+                                <Label Text="Followers" 
+                                       TextColor="{StaticResource TextPrimary}" 
+                                       FontSize="Medium"
+                                       HorizontalOptions="Center"/>
+
+                                <Label x:Name="lbFollowers" Text="585"
+                                       TextColor="#7D7D7D" FontSize="15" 
+                                       HorizontalOptions="Center"/>
+                            </StackLayout>
+                        </StackLayout>
+                        <StackLayout Grid.Column="2" Orientation="Vertical" Spacing="5" HorizontalOptions="CenterAndExpand">
+                            <StackLayout Spacing="7" HorizontalOptions="CenterAndExpand">
+                                <Label Text="Following" 
+                                       TextColor="{StaticResource TextPrimary}" 
+                                       FontSize="Medium"
+                                       HorizontalOptions="Center"/>
+
+                                <Label x:Name="lbFollowing" Text="1230"
+                                       TextColor="#7D7D7D" FontSize="15" 
+                                       HorizontalOptions="Center"/>
+                            </StackLayout>
+                        </StackLayout>
+                    </Grid>
+                </Frame>
+
+                <StackLayout>
+                    <xct:TabView
+                        TabStripBackgroundColor="White"
+                        TabStripHeight="60"
+                        HeightRequest="350"
+                        TabIndicatorColor="{StaticResource TabIconSelected}"
+                        TabContentBackgroundColor="White">
+
+                        <xct:TabViewItem
+                            Text="Posts"
+                            TextColor="{StaticResource TabIconSelected}">
+
+                            <StackLayout>
+                                <Label Text="Posts"
+                                       VerticalOptions="CenterAndExpand"
+                                       HorizontalOptions="CenterAndExpand"/>
+                            </StackLayout>
+                            
+                        </xct:TabViewItem>
+
+                        <xct:TabViewItem
+                            Text="Followers"
+                            TextColor="{StaticResource TabIconSelected}">
+
+                            <StackLayout>
+                                <Label Text="Followers"
+                                       VerticalOptions="CenterAndExpand"
+                                       HorizontalOptions="CenterAndExpand"/>
+                            </StackLayout>
+
+                        </xct:TabViewItem>
+
+                        <xct:TabViewItem
+                            Text="Following"
+                            TextColor="{StaticResource TabIconSelected}">
+
+                            <StackLayout>
+                                <Label Text="Following"
+                                       VerticalOptions="CenterAndExpand"
+                                       HorizontalOptions="CenterAndExpand"/>
+                            </StackLayout>
+
+                        </xct:TabViewItem>
+
+                    </xct:TabView>
+                </StackLayout>
+
+                <StackLayout Spacing="1">
+                    <Frame Padding="0">
+                        <Label Text="About" Margin="12"
+                    VerticalOptions="CenterAndExpand" 
+                    HorizontalOptions="CenterAndExpand" 
+                    FontFamily="FARegular" FontSize="Medium"
+                       TextColor="#f39c12">
+                        </Label>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding AboutCommand}"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+                    <Frame Padding="0">
+                        <Label Text="Log Out" Margin="12"
+                    VerticalOptions="CenterAndExpand" 
+                    HorizontalOptions="CenterAndExpand" 
+                    FontFamily="FARegular" FontSize="Medium"
+                       TextColor="#f39c12">
+                        </Label>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding LogoutCommand}"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+                    <StackLayout BackgroundColor="White">
+                        <StackLayout Margin="10"
+                                     HorizontalOptions="Center">
+                            <Label Text="Version 1.0" 
+                                   HorizontalTextAlignment="Center"
+                                   VerticalOptions="CenterAndExpand"
+                                   TextColor="{StaticResource TextPrimary}"/>
+
+                            <Label Text="Terms of Services" 
+                                   HorizontalTextAlignment="Center"
+                                   VerticalOptions="CenterAndExpand"
+                                   TextColor="{StaticResource TabIconSelected}"/>
+
+                            <Label Text="Privacy Policy" 
+                                   HorizontalTextAlignment="Center"
+                                   VerticalOptions="CenterAndExpand"
+                                   TextColor="{StaticResource TabIconSelected}"/>
+
+                        </StackLayout>
+                    </StackLayout>
+                </StackLayout>
+
+                
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

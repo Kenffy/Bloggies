@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="KenffySoft.Bloggy.Views.UpsertPostPage"             
+             Title="{Binding Title}"
+             Shell.TabBarIsVisible="False">
+
+    <!--<ContentPage.BindingContext>
+        <vm:UpsertPostViewModel />
+    </ContentPage.BindingContext>-->
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem IconImageSource="media2.png" Command="{Binding MediaCommand}" Order="Primary"/>
+        <!--<ToolbarItem IconImageSource="camera2.png" Command="{Binding CameraCommand}" Order="Primary"/>-->
+        <ToolbarItem IconImageSource="done.png" Command="{Binding SaveCommand}" Order="Primary"/>
+    </ContentPage.ToolbarItems>
+
+    <ContentPage.Content>
+
+        <ScrollView Margin="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="300"/>
+                </Grid.RowDefinitions>
+                <StackLayout Spacing="10" Margin="5" Orientation="Horizontal" Grid.Row="0">
+                    <Label Text="Public" FontSize="Medium"/>
+                    <Switch IsToggled="{Binding IsPublicPost}"
+                            OnColor="{StaticResource Accent}"/>
+                </StackLayout>
+                
+                <Entry Grid.Row="1" Text="{Binding PostTitle}" Placeholder="Title"/>
+                <Editor Grid.Row="2" Text="{Binding PostBody}"
+                             AutoSize="TextChanges"
+                             Placeholder="Enter your text" FontSize="Medium"/>
+                <Image Grid.Row="3" Aspect="AspectFill"
+                       Source="{Binding PostImage.Source}"/>
+            </Grid>
+        </ScrollView>
+
+    </ContentPage.Content>
+</ContentPage>

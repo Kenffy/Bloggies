@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:vm="clr-namespace:KenffySoft.Bloggy.ViewModels"
+             x:Class="KenffySoft.Bloggy.Views.EditProfilePage"
+             Title="Edit Profile">
+    <ContentPage.Content>
+        <ScrollView>
+            <Grid VerticalOptions="FillAndExpand">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Image x:Name="ProfileImage" Aspect="Fill"
+                   Source="{Binding ProfileImage.Source, Mode=TwoWay}"
+                   HeightRequest="350" VerticalOptions="StartAndExpand"/>
+
+                <Frame Grid.Row="1" HasShadow="True" 
+                   CornerRadius="50" Margin="20,-40,20,0"
+                   Padding="0" HeightRequest="60" 
+                   BackgroundColor="{StaticResource Accent}"
+                   WidthRequest="60"
+                   VerticalOptions="Start"
+                   HorizontalOptions="EndAndExpand">
+                    <Image Source="camera.png" Aspect="AspectFit" 
+                       VerticalOptions="CenterAndExpand"
+                       HeightRequest="35">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer x:Name="OnMedia" Command="{Binding MediaCommand}"/>
+                        </Image.GestureRecognizers>
+                    </Image>
+
+                </Frame>
+
+
+                <StackLayout x:Name="Actions"
+                         Grid.Row="2" Margin="10,0" 
+                         VerticalOptions="FillAndExpand" 
+                         HorizontalOptions="FillAndExpand">
+
+
+                    <StackLayout Margin="0,20">
+                        <StackLayout Grid.Row="1">
+                            <Entry x:Name="EntMemberName" Placeholder="Username"
+                                              PlaceholderColor="{StaticResource TextSecondary}"
+                                   Text="{Binding CurrentUser.Name}"/>
+
+                            <Entry x:Name="EntPhoneNumber" Placeholder="Phone Number"
+                                              PlaceholderColor="{StaticResource TextSecondary}"
+                                   Text="{Binding CurrentUser.PhoneNumber}"/>
+
+                            <Editor x:Name="EntDescription"
+                                               HeightRequest="100" 
+                                               Placeholder="Say something about you ..."
+                                    PlaceholderColor="{StaticResource TextSecondary}"
+                                    Text="{Binding CurrentUser.Description}"/>
+
+                            <Button TextColor="{StaticResource TextFeatured}" 
+                                    BackgroundColor="{StaticResource Accent}" Text="Save" CornerRadius="10"
+                            Margin="0,20,0,2" FontAttributes="Bold" FontSize="17" HeightRequest="45"
+                                x:Name="UpdateProfile" Command="{Binding UpdateProfileCommand}"/>
+                        </StackLayout>
+                    </StackLayout>
+
+                </StackLayout>
+            </Grid>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>
