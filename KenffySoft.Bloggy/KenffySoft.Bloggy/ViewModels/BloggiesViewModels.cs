@@ -24,7 +24,6 @@ namespace KenffySoft.Bloggy.ViewModels
         public Command LoadMoreCommand { get; }
 
         public Command ConnectionsCommand { get; }
-        public Command InvitationsCommand { get; }
         public Command<object> SelectedCommand { get; }
 
         public BloggiesViewModels()
@@ -34,7 +33,6 @@ namespace KenffySoft.Bloggy.ViewModels
             RefreshCommand = new Command(Refresh);
             LoadMoreCommand = new Command(LoadMore);
             ConnectionsCommand = new Command(OnConnections);
-            InvitationsCommand = new Command(OnInvitations);
             FollowCommand = new Command<object>(OnFollowBloggy);
             SelectedCommand = new Command<object>(OnSelected);
             LoadAllBloggies();
@@ -164,10 +162,7 @@ namespace KenffySoft.Bloggy.ViewModels
         //    IsBusy = false;
         //}
 
-        private async void OnInvitations(object obj)
-        {
-            await Shell.Current.GoToAsync(nameof(InvitationsPage));
-        }
+        
 
         private async void OnConnections(object obj)
         {

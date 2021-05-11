@@ -13,14 +13,14 @@ using Xamarin.Forms;
 
 namespace KenffySoft.Bloggy.Controls
 {
-    public class BloggySearchHandler : SearchHandler
+    public class PostSearchHandler : SearchHandler
     {
-        public ObservableCollection<Models.Bloggy> BloggyItemsSource { get; set; }
+        public ObservableCollection<PostDetail> PostItemsSource { get; set; }
         public Type SelectedItemNavigationTarget { get; set; }
 
-        public BloggySearchHandler()
+        public PostSearchHandler()
         {
-            BloggyItemsSource = new ObservableCollection<Models.Bloggy>();
+            PostItemsSource = new ObservableCollection<PostDetail>();
             Init();
         }
 
@@ -34,7 +34,7 @@ namespace KenffySoft.Bloggy.Controls
             CheckInternetConnection();
             try
             {
-                BloggyItemsSource = await BloggyServices.GetAllBloggiesAsync();
+                PostItemsSource = await BloggyServices.GetPostsAsync();
                 //BloggyCollection = await BloggyServices.GetAllBloggiesAsync();
             }
             catch (Exception ex)
@@ -65,8 +65,9 @@ namespace KenffySoft.Bloggy.Controls
             }
             else
             {
-                ItemsSource = BloggyItemsSource
-                    .Where(p => p.Name.ToLower().Contains(newValue.ToLower()))
+                ItemsSource = PostItemsSource
+                    .Where(p => p.Title.ToLower().Contains(newValue.ToLower()) ||
+                                p.Body.ToLower().Contains(newValue.ToLower()))
                     .ToList();
             }
         }
@@ -76,11 +77,8 @@ namespace KenffySoft.Bloggy.Controls
             base.OnItemSelected(item);
             await Task.Delay(1000);
 
-            var bloggy = item as Models.Bloggy;
-            //await Shell.Current.GoToAsync($"{nameof(PostDetailPage)}?{nameof(PostDetailViewModel.PostId)}={post.Id}");
-
-            var profileview = new AboutPage() { BindingContext = new AboutViewModel(bloggy.Id) };
-            await Shell.Current.Navigation.PushAsync(profileview);
+            var post = item as PostDetail;
+            await Shell.Current.GoToAsync($"{nameof(PostDetailPage)}?{nameof(PostDetailViewModel.PostId)}={post.Id}");
         }
     }
 }

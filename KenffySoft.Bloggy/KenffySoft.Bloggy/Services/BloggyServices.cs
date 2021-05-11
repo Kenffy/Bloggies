@@ -87,6 +87,32 @@ namespace KenffySoft.Bloggy.Services
             return member.Object;
         }
 
+        public static async Task<ObservableCollection<Models.Bloggy>> GetAllBloggiesAsync()
+        {
+            var authMember = await GetAuthMemberAsync();
+
+            FirebaseAuthLink token = await GetRefreshLink();
+            var client = new FirebaseClient(BloggyConstant.ConnectionString,
+                    new FirebaseOptions { AuthTokenAsyncFactory = () => Task.FromResult(token.FirebaseToken) });
+
+            var members = (await client
+                  .Child("Members")
+                  .OnceAsync<Member>()).Select(item => new Models.Bloggy
+                  {
+                      Id = item.Object.Id,
+                      Name = item.Object.Name,
+                      Avatar = item.Object.Avatar,
+                      AvatarColor = item.Object.AvatarColor,
+                      Email = item.Object.Email,
+                      Description = item.Object.Description,
+                      ProfileImage = item.Object.ProfileImage,
+                      Followers = item.Object.Followers,
+                      NumFollowers = item.Object.NumFollowers
+                  }).Where(m => m.Email != authMember.Email).ToList();
+
+            return new ObservableCollection<Models.Bloggy>(members);
+        }
+
         public static async Task<ObservableCollection<Models.Bloggy>> GetBloggiesAsync(int pageNumber, int pageSize)
         {
             var authMember = await GetAuthMemberAsync();
@@ -118,6 +144,82 @@ namespace KenffySoft.Bloggy.Services
                 {
                     bloggies.Add(blog);
                 }
+            }
+
+            var filterBloggies = bloggies.Skip((pageNumber - 1) * pageSize).Take(pageSize).OrderByDescending(m => m.Name).ToList();
+            return new ObservableCollection<Models.Bloggy>(filterBloggies);
+        }
+
+        public static async Task<ObservableCollection<Models.Bloggy>> GetFollowersAsync(int pageNumber, int pageSize)
+        {
+            var authMember = await GetAuthMemberAsync();
+
+            FirebaseAuthLink token = await GetRefreshLink();
+            var client = new FirebaseClient(BloggyConstant.ConnectionString,
+                    new FirebaseOptions { AuthTokenAsyncFactory = () => Task.FromResult(token.FirebaseToken) });
+
+            var followers = authMember.Followers.Split(',');
+            followers = followers.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+
+            var bloggies = new List<Models.Bloggy>();
+
+            foreach (var follower in followers)
+            {
+
+                var f = (await client
+                  .Child("Members")
+                  .OnceAsync<Member>()).Select(item => new Models.Bloggy
+                  {
+                      Id = item.Object.Id,
+                      Name = item.Object.Name,
+                      Avatar = item.Object.Avatar,
+                      AvatarColor = item.Object.AvatarColor,
+                      Email = item.Object.Email,
+                      Description = item.Object.Description,
+                      ProfileImage = item.Object.ProfileImage,
+                      Followers = item.Object.Followers,
+                      NumFollowers = item.Object.NumFollowers
+                  }).Where(m => m.Id == follower).FirstOrDefault();
+
+                 bloggies.Add(f);
+            }
+
+            var filterBloggies = bloggies.Skip((pageNumber - 1) * pageSize).Take(pageSize).OrderByDescending(m => m.Name).ToList();
+            return new ObservableCollection<Models.Bloggy>(filterBloggies);
+        }
+
+        public static async Task<ObservableCollection<Models.Bloggy>> GetFollowingAsync(int pageNumber, int pageSize)
+        {
+            var authMember = await GetAuthMemberAsync();
+
+            FirebaseAuthLink token = await GetRefreshLink();
+            var client = new FirebaseClient(BloggyConstant.ConnectionString,
+                    new FirebaseOptions { AuthTokenAsyncFactory = () => Task.FromResult(token.FirebaseToken) });
+
+            var following = authMember.Following.Split(',');
+            following = following.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+
+            var bloggies = new List<Models.Bloggy>();
+
+            foreach (var follower in following)
+            {
+
+                var f = (await client
+                  .Child("Members")
+                  .OnceAsync<Member>()).Select(item => new Models.Bloggy
+                  {
+                      Id = item.Object.Id,
+                      Name = item.Object.Name,
+                      Avatar = item.Object.Avatar,
+                      AvatarColor = item.Object.AvatarColor,
+                      Email = item.Object.Email,
+                      Description = item.Object.Description,
+                      ProfileImage = item.Object.ProfileImage,
+                      Followers = item.Object.Followers,
+                      NumFollowers = item.Object.NumFollowers
+                  }).Where(m => m.Id == follower).FirstOrDefault();
+
+                bloggies.Add(f);
             }
 
             var filterBloggies = bloggies.Skip((pageNumber - 1) * pageSize).Take(pageSize).OrderByDescending(m => m.Name).ToList();
@@ -244,6 +346,42 @@ namespace KenffySoft.Bloggy.Services
             user.NumPosts += 1; // await GetNumPostsAsync();
 
             await client.Child("Members").Child(toUpdateUser.Key).PutAsync(user);
+
+            var msg = user.Name + " added a new post.";
+            await NotifyFollowers(token.User.LocalId, post.Id.ToString(), msg, BloggyConstant.NewPost);
+        }
+
+        public static async Task NotifyFollowers(string senderId, string itemId, string message, string target)
+        {
+            FirebaseAuthLink token = await GetRefreshLink();
+            var client = new FirebaseClient(BloggyConstant.ConnectionString,
+                new FirebaseOptions { AuthTokenAsyncFactory = () => Task.FromResult(token.FirebaseToken) });
+
+            var user = (await client.Child("Members")
+                    .OnceAsync<Member>()).FirstOrDefault
+                    (a => a.Object.Id == token.User.LocalId).Object;
+
+            var followers = user.Followers.Split(',');
+            followers = followers.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+
+            var notification = new Notification()
+            {
+                Id = new Guid(),
+                SenderId = senderId,
+                ReceiverId = "",
+                Message = message,
+                Target = target,
+                Link = itemId,
+                CreatedAt = DateTime.Now,
+                Opened = false,
+                Viewed = false
+            };
+
+            foreach (var follower in followers)
+            {
+                notification.ReceiverId = follower;
+                await client.Child("Notifications").PostAsync(notification);
+            }
         }
         public static async Task<PostDetail> GetPostByIdAsync(Guid postId)
         {
@@ -285,6 +423,35 @@ namespace KenffySoft.Bloggy.Services
             return post;
         }
 
+        public static async Task<ObservableCollection<PostDetail>> GetPostsAsync()
+        {
+            FirebaseAuthLink token = await GetRefreshLink();
+            var client = new FirebaseClient(BloggyConstant.ConnectionString,
+                new FirebaseOptions { AuthTokenAsyncFactory = () => Task.FromResult(token.FirebaseToken) });
+
+            var posts = (await client
+                  .Child("Posts")
+                  .OnceAsync<Post>())
+                  .Where(a => a.Object.IsPublicPost)
+                  .Select(item => new PostDetail
+                  {
+                      Id = item.Object.Id,
+                      MemberId = item.Object.MemberId,
+                      Title = item.Object.Title,
+                      Body = item.Object.Body,
+                      IsPublicPost = item.Object.IsPublicPost,
+                      CreatedAt = item.Object.CreatedAt,
+                      PostedAt = BloggyConstant.GetTimeMessage(item.Object.CreatedAt),
+                      PostImage = item.Object.PostImage,
+                      NumLikes = item.Object.NumLikes,
+                      IsLikedByMe = item.Object.Likes.Contains(token.User.LocalId),
+                      LikeImage = item.Object.Likes.Contains(token.User.LocalId) ? "liked.png" : "unliked.png",
+                      NumComments = item.Object.NumComments,
+                      Details = item.Object.NumLikes.ToString() + " Like(s)    " + item.Object.NumComments.ToString() + " Comment(s)"
+                  }).OrderByDescending(m => m.CreatedAt).ToList();
+
+            return new ObservableCollection<PostDetail>(posts);
+        }
         public static async Task<ObservableCollection<PostDetail>> GetAllPostsAsync(int pageNumber, int pageSize)
         {
             FirebaseAuthLink token = await GetRefreshLink();
@@ -305,6 +472,7 @@ namespace KenffySoft.Bloggy.Services
                       MemberId = item.Object.MemberId,
                       Title = item.Object.Title,
                       Body = item.Object.Body,
+                      IsPublicPost = item.Object.IsPublicPost,
                       CreatedAt = item.Object.CreatedAt,
                       PostedAt = BloggyConstant.GetTimeMessage(item.Object.CreatedAt),
                       PostImage = item.Object.PostImage,
@@ -324,10 +492,6 @@ namespace KenffySoft.Bloggy.Services
             var client = new FirebaseClient(BloggyConstant.ConnectionString,
                 new FirebaseOptions { AuthTokenAsyncFactory = () => Task.FromResult(token.FirebaseToken) });
 
-            //var member = (await client.Child("Members")
-            //        .OnceAsync<Member>()).FirstOrDefault
-            //        (a => a.Object.Id == token.User.LocalId);
-
             var posts = (await client
                   .Child("Posts")
                   .OnceAsync<Post>())
@@ -338,6 +502,7 @@ namespace KenffySoft.Bloggy.Services
                       MemberId = item.Object.MemberId,
                       Title = item.Object.Title,
                       Body = item.Object.Body,
+                      IsPublicPost = item.Object.IsPublicPost,
                       CreatedAt = item.Object.CreatedAt,
                       PostedAt = BloggyConstant.GetTimeMessage(item.Object.CreatedAt),
                       PostImage = item.Object.PostImage,
@@ -435,6 +600,25 @@ namespace KenffySoft.Bloggy.Services
             post.NumComments += 1;
             //post.NumComments = await GetNumCommentByPostIdAsync(model.PostId);
             await client.Child("Posts").Child(toUpdatePost.Key).PutAsync(post);
+
+            var userPost = (await client.Child("Members")
+            .OnceAsync<Member>()).FirstOrDefault
+            (a => a.Object.Id == toUpdatePost.Object.MemberId).Object;
+
+            var user = (await client.Child("Members")
+            .OnceAsync<Member>()).FirstOrDefault
+            (a => a.Object.Id == token.User.LocalId).Object;
+
+            var msg = "";
+            if(token.User.LocalId == toUpdatePost.Object.MemberId)
+            {
+                msg = user.Name + " commented his own post.";
+            }
+            else
+            {
+                msg = user.Name + " commented " + userPost.Name + "'s post.";
+            }
+            await NotifyFollowers(token.User.LocalId, post.Id.ToString(), msg, BloggyConstant.LikePost);
 
         }
         public static async Task<ObservableCollection<CommentDetail>> GetAllCommentsAsync()
@@ -579,6 +763,14 @@ namespace KenffySoft.Bloggy.Services
             .OnceAsync<Post>()).FirstOrDefault
             (a => a.Object.Id == PostId);
 
+            var userPost = (await client.Child("Members")
+            .OnceAsync<Member>()).FirstOrDefault
+            (a => a.Object.Id == toUpdatePost.Object.MemberId).Object;
+
+            var user = (await client.Child("Members")
+            .OnceAsync<Member>()).FirstOrDefault
+            (a => a.Object.Id == token.User.LocalId).Object;
+
             var post = toUpdatePost.Object;
 
             if (post.Likes.Contains(token.User.LocalId))
@@ -592,8 +784,84 @@ namespace KenffySoft.Bloggy.Services
                 //Like
                 post.Likes += token.User.LocalId + ",";
                 post.NumLikes++;
+
+                var msg = "";
+                if (token.User.LocalId == toUpdatePost.Object.MemberId)
+                {
+                    msg = user.Name + " liked his own post.";
+                }
+                else
+                {
+                    msg = user.Name + " liked " + userPost.Name + "'s post.";
+                }
+                await NotifyFollowers(token.User.LocalId, post.Id.ToString(), msg, BloggyConstant.LikePost);
             }
             await client.Child("Posts").Child(toUpdatePost.Key).PutAsync(post);
+        }
+        #endregion
+
+        #region notifications
+        public static async Task<ObservableCollection<NotificationDetail>> GetNotificationsAsync(int pageNumber, int pageSize)
+        {
+            FirebaseAuthLink token = await GetRefreshLink();
+            var client = new FirebaseClient(BloggyConstant.ConnectionString,
+                new FirebaseOptions { AuthTokenAsyncFactory = () => Task.FromResult(token.FirebaseToken) });
+
+            var user = (await client.Child("Members")
+            .OnceAsync<Member>()).FirstOrDefault
+            (a => a.Object.Id == token.User.LocalId).Object;
+
+            var NotificationList = new List<NotificationDetail>();
+
+            var notifications = (await client.Child("Notifications").OnceAsync<Notification>())
+                .Select(item => new Notification
+                {
+                    Id = item.Object.Id,
+                    SenderId = item.Object.SenderId,
+                    ReceiverId = item.Object.ReceiverId,
+                    Message = item.Object.Message,
+                    CreatedAt = item.Object.CreatedAt,
+                    Target = item.Object.Target,
+                    Link = item.Object.Link,
+                    Opened = item.Object.Opened,
+                    Viewed = item.Object.Viewed
+                }).Where(n => n.ReceiverId == token.User.LocalId).ToList();
+
+            foreach (var noti in notifications)
+            {
+                var member = (await client.Child("Members")
+                    .OnceAsync<Member>()).FirstOrDefault
+                    (a => a.Object.Id == noti.SenderId).Object;
+
+                var noty = new NotificationDetail
+                {
+                    Id = noti.Id,
+                    SenderId = noti.SenderId,
+                    SenderName = member.Name,
+                    SenderProfile = member.ProfileImage,
+                    SenderAvatar = member.Avatar,
+                    SenderAvatarColor = member.AvatarColor,
+                    ReceiverId = noti.ReceiverId,
+                    ReceiverName = user.Name,
+                    ReceiverProfile = user.ProfileImage,
+                    ReceiverAvatar = user.Avatar,
+                    ReceiverAvatarColor = user.AvatarColor,
+                    Message = noti.Message,
+                    CreatedAt = noti.CreatedAt,
+                    NotifyAt = BloggyConstant.GetTimeMessage(noti.CreatedAt),
+                    Target = noti.Target,
+                    Link = noti.Link,
+                    Opened = noti.Opened,
+                    Viewed = noti.Viewed
+                };
+
+                NotificationList.Add(noty);
+            }
+
+            NotificationList.OrderByDescending(m => m.CreatedAt).ToList();
+
+            var filter = NotificationList.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            return new ObservableCollection<NotificationDetail>(filter);
         }
         #endregion
 

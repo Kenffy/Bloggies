@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:vm="clr-namespace:KenffySoft.Bloggy.ViewModels" 
              xmlns:helpers="clr-namespace:KenffySoft.Bloggy.Helpers"
-             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
+             xmlns:control="clr-namespace:KenffySoft.Bloggy.Controls"
              x:Class="KenffySoft.Bloggy.Views.BloggiesPage"
              Title="Connections">
 
@@ -14,8 +15,37 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <xct:TabSelectionChangedEventArgs x:Key="SelectionChangedEventConverter"/>
+
+            <DataTemplate x:Key="BloggySearchTemplate">
+                <StackLayout Orientation="Horizontal" Margin="0,5">
+
+                    <xct:AvatarView Text="{Binding Avatar}"  Source="{Binding ProfileImage}"  
+                                                                      Size="50" Color="{Binding AvatarColor}" 
+                                                                      VerticalOptions="StartAndExpand" Margin="8"/>
+
+                    <StackLayout Margin="5" Spacing="0">
+                        <Label Text="{Binding Name}" VerticalOptions="StartAndExpand"
+                                                            FontSize="Medium" FontAttributes="Bold">
+                        </Label>
+
+                        <Label Text="{Binding Description}" 
+                               VerticalOptions="StartAndExpand"
+                               FontSize="Body" HorizontalOptions="StartAndExpand"/>
+                    </StackLayout>
+
+
+                </StackLayout>
+            </DataTemplate>
         </ResourceDictionary>
     </ContentPage.Resources>
+
+    <Shell.SearchHandler>
+        <control:BloggySearchHandler 
+            Placeholder="Enter search term"
+            ShowsResults="true"
+            SearchBoxVisibility="Collapsible"
+            ItemTemplate="{StaticResource BloggySearchTemplate}"/>
+    </Shell.SearchHandler>
 
     <ContentPage.Content>
 
@@ -117,8 +147,7 @@
                                         HasShadow="{OnPlatform iOS='False', Android='True'}"
                                         Grid.Row="4" Padding="5"
                                         Margin="{OnPlatform iOS='15', Android='20'}"
-                                        VerticalOptions="CenterAndExpand"
-                                               IsEnabled="False">
+                                        VerticalOptions="CenterAndExpand">
 
                                             <Label Text="Follow" x:Name="lbFollow"
                                             FontSize="{OnPlatform iOS='15', Android='Medium'}" 
@@ -138,143 +167,10 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
 
-                    <!--<CollectionView.Footer>
-                        <StackLayout HorizontalOptions="Center">
-                            <Label Text="No Bloggies More" 
-                                x:Name="lbLoadMore"
-                                FontSize="Medium" Padding="5"
-                                VerticalOptions="Center"
-                                FontAttributes="Bold"
-                                Margin="10" HorizontalTextAlignment="Center"
-                                TextColor="{StaticResource TabIconSelected}">
-
-                            </Label>
-                        </StackLayout>
-                    </CollectionView.Footer>-->
                 </CollectionView>
 
             </RefreshView>
         </StackLayout>
-        
+
     </ContentPage.Content>
 </ContentPage>
-
-
-
-
-
-
-
-
-<!--<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-             xmlns:vm="clr-namespace:KenffySoft.Bloggy.ViewModels" xmlns:views="http://xamarin.com/schemas/2020/toolkit"
-             x:Class="KenffySoft.Bloggy.Views.BloggiesPage">
-
-    <ContentPage.BindingContext>
-        <vm:BloggiesViewModels />
-    </ContentPage.BindingContext>
-    
-    <ContentPage.Content>
-        <StackLayout>
-            <CollectionView x:Name="Bloggies" 
-                            ItemsSource="{Binding Bloggies}"
-                                 VerticalOptions="Center"   
-                                 HorizontalOptions="Center" 
-                                 SelectionMode="Single"
-                                 RemainingItemsThreshold="1">
-                <CollectionView.ItemsLayout>
-                    <GridItemsLayout Orientation="Vertical" Span="2"/>
-                </CollectionView.ItemsLayout>
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <SwipeView>
-                            <StackLayout Padding="0">
-                                <Frame CornerRadius="10" HasShadow="True" 
-                                   Padding="0" Margin="5"
-                                   BorderColor="{StaticResource TabIconSelected}">
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="120"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-
-                                        <Frame Grid.Row="0" BackgroundColor="{StaticResource TabIconSelected}">
-                                            <views:AvatarView HorizontalOptions="CenterAndExpand"
-                                                          VerticalOptions="CenterAndExpand"
-                                                          Text="{Binding Avatar}"  
-                                                          Source="{Binding ProfileImage}"  
-                                                          Color="{Binding AvatarColor}" 
-                                                          TextColor="White" Size="75"
-                                              x:Name="PostAvatar"/>
-                                        </Frame>
-
-                                        <Label Grid.Row="1" 
-                                           Text="{Binding Name}" TextColor="{StaticResource TextPrimary}" 
-                                           HorizontalTextAlignment="Center" 
-                                           VerticalOptions="CenterAndExpand"
-                                           FontSize="Large" Margin="5,5"
-                                           FontAttributes="Bold"/>
-
-                                        <Label Grid.Row="2" 
-                                           Text="{Binding Description}" TextColor="{StaticResource TextPrimary}" 
-                                           HorizontalTextAlignment="Center" 
-                                           VerticalOptions="CenterAndExpand"
-                                           FontSize="Medium" Margin="5,5"/>
-
-                                        <StackLayout Orientation="Horizontal" 
-                                                 Grid.Row="3" Spacing="5"
-                                                 HorizontalOptions="Center">
-                                            <Label Text="{Binding NumFollowers}" TextColor="{StaticResource TextPrimary}"  
-                                               VerticalOptions="CenterAndExpand"
-                                               FontSize="Small"/>
-
-                                            <Label Text="Follower(s)" TextColor="{StaticResource TextPrimary}" 
-                                               VerticalOptions="CenterAndExpand"
-                                               FontSize="Small"/>
-                                        </StackLayout>
-
-                                        <Frame BorderColor="{StaticResource TabIconSelected}" 
-                                           CornerRadius="30" Grid.Row="4" Padding="5"
-                                           Margin="20"
-                                           VerticalOptions="CenterAndExpand">
-
-                                            <Label Text="Follow" x:Name="lbFollow"
-                                               FontSize="Medium" Padding="5"
-                                               VerticalOptions="Center"
-                                               FontAttributes="Bold"
-                                               Margin="0" HorizontalTextAlignment="Center"
-                                               TextColor="{StaticResource TabIconSelected}">
-
-                                                --><!--<Label.GestureRecognizers>
-                                            <TapGestureRecognizer Tapped="OnFollow_Tapped" CommandParameter="{Binding .}"/>
-                                        </Label.GestureRecognizers>--><!--
-
-                                            </Label>
-
-                                        </Frame>
-                                    </Grid>
-                                </Frame>
-                            </StackLayout>
-
-                            <VisualStateManager.VisualStateGroups>
-                                <VisualStateGroup Name="CommonStates">
-                                    <VisualState Name="Normal" />
-                                    <VisualState Name="Selected">
-                                        <VisualState.Setters>
-                                            <Setter Property="BackgroundColor" Value="Red" />
-                                        </VisualState.Setters>
-                                    </VisualState>
-                                </VisualStateGroup>
-                            </VisualStateManager.VisualStateGroups>
-                        </SwipeView>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-        </StackLayout>
-    </ContentPage.Content>
-</ContentPage>-->

@@ -3,13 +3,47 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:helpers="clr-namespace:KenffySoft.Bloggy.Helpers" 
              xmlns:vm="clr-namespace:KenffySoft.Bloggy.ViewModels" 
-             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" xmlns:xct="http://xamarin.com/schemas/2020/toolkit" xmlns:control="clr-namespace:KenffySoft.Bloggy.Controls"
              x:Class="KenffySoft.Bloggy.Views.HomePage"
              Title="Bloggies">
 
     <ContentPage.BindingContext>
         <vm:HomeViewModel />
     </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+        <DataTemplate x:Key="PostSearchTemplate">
+            <Grid Padding="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.15*" />
+                    <ColumnDefinition Width="0.85*" />
+                </Grid.ColumnDefinitions>
+                <ff:CachedImage Source="{Binding PostImage}" 
+                       Aspect="AspectFill"
+                       HeightRequest="40" 
+                       WidthRequest="40" />
+                <Label Grid.Column="1" 
+                       Text="{Binding Title}" 
+                       FontAttributes="Bold" 
+                       MaxLines="2"
+                       LineBreakMode="TailTruncation"/>
+            </Grid>
+        </DataTemplate>
+    </ContentPage.Resources>
+
+    <!--<ContentPage.ToolbarItems>
+        <ToolbarItem IconImageSource="search.png" IsEnabled="{Binding IsSearchEnable}" Command="{Binding OnSearchCommand}" Order="Primary"/>
+        <ToolbarItem Text="Cancel" IsEnabled="{Binding IsCancelSearchEnable}" Command="{Binding OnCancelSearchCommand}" Order="Primary"/>
+        <ToolbarItem IconImageSource="notifications.png" Command="{Binding NotificationCommand}" Order="Primary"/>
+    </ContentPage.ToolbarItems>-->
+
+    <Shell.SearchHandler>
+        <control:PostSearchHandler 
+            Placeholder="Enter search term"
+            ShowsResults="true"
+            SearchBoxVisibility="Collapsible"
+            ItemTemplate="{StaticResource PostSearchTemplate}"/>
+    </Shell.SearchHandler>
 
     <!--IsRefreshing="{Binding IsBusy, Mode=OneWay}"-->
     <ContentPage.Content>

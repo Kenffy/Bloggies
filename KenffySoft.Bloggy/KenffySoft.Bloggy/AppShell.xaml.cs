@@ -16,6 +16,7 @@ namespace KenffySoft.Bloggy
             Routing.RegisterRoute(nameof(ProfilePage), typeof(ProfilePage));
             Routing.RegisterRoute(nameof(InvitationsPage), typeof(InvitationsPage));
             Routing.RegisterRoute(nameof(ConnectionsPage), typeof(ConnectionsPage));
+            Routing.RegisterRoute(nameof(NotificationsPage), typeof(NotificationsPage));
             Routing.RegisterRoute(nameof(PostDetailPage), typeof(PostDetailPage));
             Routing.RegisterRoute(nameof(ImagePage), typeof(ImagePage));
 

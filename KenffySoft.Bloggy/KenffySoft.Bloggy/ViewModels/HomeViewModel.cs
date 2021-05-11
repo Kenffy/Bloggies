@@ -15,9 +15,23 @@ namespace KenffySoft.Bloggy.ViewModels
     {
         private int pageNumber = 0;
         private readonly int pageSize = 10;
+        private bool isSearchEnable;
+        private bool isCancelSearchEnable;
 
         private PostDetail selectedPost;
         private ObservableCollection<PostDetail> postCollection;
+
+        public bool IsSearchEnable
+        {
+            get => isSearchEnable;
+            set => SetProperty(ref isSearchEnable, value);
+        }
+
+        public bool IsCancelSearchEnable
+        {
+            get => isCancelSearchEnable;
+            set => SetProperty(ref isCancelSearchEnable, value);
+        }
 
         public PostDetail SelectedPost
         {
@@ -32,16 +46,35 @@ namespace KenffySoft.Bloggy.ViewModels
 
         public Command RefreshCommand { get; }
         public Command LoadMoreCommand { get; }
+        public Command NotificationCommand { get; }
 
         public Command<object> SelectedCommand { get; }
+
+        public Command OnSearchCommand { get; }
+        public Command OnCancelSearchCommand { get; }
         public HomeViewModel()
         {
+            isSearchEnable = false;
+            isCancelSearchEnable = true;
             selectedPost = new PostDetail();
             postCollection = new ObservableCollection<PostDetail>();
             RefreshCommand = new Command(Refresh);
             LoadMoreCommand = new Command(LoadMore);
             SelectedCommand = new Command<object>(OnSelected);
+            NotificationCommand = new Command(OnNotifications);
+            OnSearchCommand = new Command(OnSearch);
+            OnCancelSearchCommand = new Command(OnCancelSearch);
             Init();
+        }
+
+        private void OnCancelSearch(object obj)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void OnSearch(object obj)
+        {
+            throw new NotImplementedException();
         }
 
         private async void Init()
@@ -105,6 +138,11 @@ namespace KenffySoft.Bloggy.ViewModels
                 PostCollection.Clear();
                 await LoadPostAsync();
             }
+        }
+
+        private async void OnNotifications(object obj)
+        {
+            await Shell.Current.GoToAsync(nameof(NotificationsPage));
         }
 
         private async void CheckInternetConnection()

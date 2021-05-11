@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace KenffySoft.Bloggy.ViewModels
@@ -68,7 +69,7 @@ namespace KenffySoft.Bloggy.ViewModels
         private void OnRefreshPost(UpsertPostViewModel arg1, bool arg2)
         {
             if (arg2 == true)
-            {            
+            {
                 pageNumber = 0;
                 PostList.Clear();
                 LoadPostAsync();

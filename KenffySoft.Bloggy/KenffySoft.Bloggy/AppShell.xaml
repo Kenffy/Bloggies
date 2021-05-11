@@ -58,17 +58,17 @@
                 ContentTemplate="{DataTemplate local:BloggiesPage}"/>
         </Tab>
 
-        <Tab Title="Search"
-             Route="SearchPage"
+        <Tab Title="Notifications"
+             Route="NotificationsPage"
              Shell.NavBarIsVisible="True"
              Shell.TitleColor="{StaticResource TabIconSelected}"
              >
             <Tab.Icon>
                 <FontImageSource FontFamily="FASolid"
-                                     Glyph="{x:Static helpers:BloggyIcon.Search}"/>
+                                     Glyph="{x:Static helpers:BloggyIcon.Bell}"/>
             </Tab.Icon>
             <ShellContent
-                ContentTemplate="{DataTemplate local:SearchPage}"/>
+                ContentTemplate="{DataTemplate local:NotificationsPage}"/>
         </Tab>
 
         <Tab Title="Posts"
@@ -128,6 +128,7 @@
         <ShellContent Route="SettingsPage" ContentTemplate="{DataTemplate local:SettingsPage}" />
         <ShellContent Route="ConnectionsPage" ContentTemplate="{DataTemplate local:ConnectionsPage}" />
         <ShellContent Route="InvitationsPage" ContentTemplate="{DataTemplate local:InvitationsPage}" />
+        <ShellContent Route="NotificationsPage" ContentTemplate="{DataTemplate local:NotificationsPage}" />
         <ShellContent Route="PostsPage" ContentTemplate="{DataTemplate users:PostsPage}" />
         <ShellContent Route="FollowersPage" ContentTemplate="{DataTemplate users:FollowersPage}" />
         <ShellContent Route="FollowingPage" ContentTemplate="{DataTemplate users:FollowingPage}" />

@@ -60,6 +60,7 @@ namespace KenffySoft.Bloggy.ViewModels
 
             PostTitle = CurrentPost.Title;
             PostBody = CurrentPost.Body;
+            IsPublicPost = CurrentPost.IsPublicPost;
 
             if (!string.IsNullOrEmpty(CurrentPost.PostImage))
             {
@@ -113,6 +114,7 @@ namespace KenffySoft.Bloggy.ViewModels
         {
             CurrentPost.Title = PostTitle;
             CurrentPost.Body = PostBody;
+            CurrentPost.IsPublicPost = IsPublicPost;
 
             if (BloggyConstant.CheckConnectivity() == false)
             {
@@ -127,11 +129,7 @@ namespace KenffySoft.Bloggy.ViewModels
                 {
                     // New post
                     CurrentPost.Id = Guid.NewGuid();
-                    CurrentPost.IsPublicPost = IsPublicPost;
                     await BloggyServices.CreatePostAsync(CurrentPost);
-                    PostTitle = "";
-                    PostBody = "";
-                    PostImage = new Image();
                     MessagingCenter.Send(this, "UpsertPostStatus", true);
                     var msg = "Post successfully added.";
                     await Application.Current.MainPage.DisplayAlert("Create Post", msg, "Alright");
@@ -141,7 +139,7 @@ namespace KenffySoft.Bloggy.ViewModels
                 {
                     // Edit post
                     await BloggyServices.UpdatePostAsync(CurrentPost);
-                    MessagingCenter.Send(this, "UpsertPostStatus", true);
+                    //MessagingCenter.Send(this, "UpsertPostStatus", true);
                     var msg = "Post successfully updated.";
                     await Application.Current.MainPage.DisplayAlert("Update Post", msg, "Alright");
                     await Shell.Current.Navigation.PopAsync();

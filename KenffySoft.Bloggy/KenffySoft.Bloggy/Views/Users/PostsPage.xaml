@@ -1,13 +1,113 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" xmlns:views="http://xamarin.com/schemas/2020/toolkit" xmlns:vm="clr-namespace:KenffySoft.Bloggy.ViewModels"
              x:Class="KenffySoft.Bloggy.Views.Users.PostsPage"
              Title="Posts">
-    <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Welcome to Posts"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
-    </ContentPage.Content>
+
+
+    <ContentPage.BindingContext>
+        <vm:PostViewModel />
+    </ContentPage.BindingContext>
+
+    <!--<ContentPage.ToolbarItems>
+        <ToolbarItem IconImageSource="add.png" Order="Primary" Command="{Binding AddCommand}"/>
+    </ContentPage.ToolbarItems>-->
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <views:ItemSelectedEventArgsConverter x:Key="ItemSelectedEventArgsConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <StackLayout VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+
+        <Grid>
+            <ListView ItemsSource="{Binding PostList}"
+                        HasUnevenRows="True" 
+                        IsPullToRefreshEnabled="True"
+                        SeparatorVisibility="None"
+                        RefreshCommand="{Binding RefreshCommand}"
+                        IsRefreshing="{Binding IsBusy, Mode=OneWay}"
+                        SelectedItem="{Binding SelectedPost, Mode=TwoWay}"
+                        Margin="0"
+                        AbsoluteLayout.LayoutFlags="All"
+                        AbsoluteLayout.LayoutBounds="0,0,1,1">
+                <ListView.Behaviors>
+                    <views:EventToCommandBehavior
+                    EventName="ItemSelected"
+                    Command="{Binding SelectedCommand}"                
+                    EventArgsConverter="{StaticResource ItemSelectedEventArgsConverter}"/>
+                </ListView.Behaviors>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+
+                            <StackLayout BackgroundColor="White" Margin="0,5">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="100"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!--Title-->
+                                    <StackLayout Grid.Column="0" Margin="10">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+
+                                            <StackLayout Grid.Row="0">
+                                                <Label Text="{Binding Title}" FontAttributes="Bold" 
+                                                       FontSize="18" MaxLines="2"
+                                                       LineBreakMode="TailTruncation"
+                                                       TextColor="{StaticResource TextPrimary}"/>
+                                                <Label Text="{Binding PostedAt}"/>
+                                            </StackLayout>
+
+                                            <StackLayout Grid.Row="1" Margin="0,5">
+                                                <Label Text="{Binding Details}"/>
+                                            </StackLayout>
+                                        </Grid>
+
+                                    </StackLayout>
+
+                                    <!--Picture-->
+                                    <StackLayout Grid.Column="1" Margin="5">
+                                        <Frame CornerRadius="5" Padding="-1" VerticalOptions="CenterAndExpand">
+                                            <ff:CachedImage Source="{Binding PostImage}" Aspect="AspectFill" HeightRequest="100"/>
+                                        </Frame>
+                                    </StackLayout>
+                                </Grid>
+                            </StackLayout>
+
+                            <!--<ViewCell.ContextActions>
+                                <MenuItem Text="Edit" Command="{Binding Source={x:Reference MyPost}, Path=BindingContext.EditCommand}"  
+                                          CommandParameter="{Binding .}"/>
+                                <MenuItem Text="Delete" Command="{Binding Source={x:Reference MyPost}, Path=BindingContext.DeleteCommand}"  
+                                          CommandParameter="{Binding .}" IsDestructive="True"/>
+                            </ViewCell.ContextActions>-->
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+
+                <!--<ListView.Footer>
+                    <StackLayout HorizontalOptions="Center"
+                                 VerticalOptions="EndAndExpand">
+                        <Label Text="Load More..." FontSize="Medium" Margin="12"
+                               HorizontalOptions="Center" VerticalOptions="EndAndExpand"/>
+
+                        <StackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding LoadMoreCommand}"/>
+                        </StackLayout.GestureRecognizers>
+                    </StackLayout>
+                </ListView.Footer>-->
+            </ListView>
+
+
+            <ActivityIndicator HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"
+                          Color="#f39c12" IsRunning="{Binding IsBusy}"/>
+        </Grid>
+    </StackLayout>
 </ContentPage>

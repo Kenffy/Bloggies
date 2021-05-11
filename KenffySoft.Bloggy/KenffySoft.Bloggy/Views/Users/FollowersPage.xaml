@@ -1,13 +1,51 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:views="http://xamarin.com/schemas/2020/toolkit" 
+             xmlns:vm="clr-namespace:KenffySoft.Bloggy.ViewModels"
              x:Class="KenffySoft.Bloggy.Views.Users.FollowersPage"
              Title="Followers">
+
+    <ContentPage.BindingContext>
+        <vm:FollowersViewModel />
+    </ContentPage.BindingContext>
+    
     <ContentPage.Content>
         <StackLayout>
-            <Label Text="Welcome to Followers"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+            <ListView x:Name="FollowersList" Grid.Row="1"
+                  HasUnevenRows="True"
+                  ItemsSource="{Binding FollowersCollection}"
+                  Margin="0">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+
+                            <StackLayout Spacing="16" Margin="0,10" Padding="0">
+                                <!--Header-->
+                                <StackLayout Grid.Row="0" Orientation="Horizontal">
+
+                                    <views:AvatarView Text="{Binding Avatar}"  Source="{Binding ProfileImage}"  
+                                                                      Size="50" Color="{Binding AvatarColor}" TextColor="White" 
+                                                                      VerticalOptions="StartAndExpand" Margin="8"/>
+
+                                    <StackLayout Margin="2" VerticalOptions="Center">
+                                        <Label Text="{Binding Name}" FontSize="Medium" 
+                                           FontAttributes="Bold"
+                                           VerticalOptions="Center"/>
+
+                                        <Label Text="{Binding Description}" FontSize="Subtitle" 
+                                           TextColor="DarkGray" FontAttributes="Italic"
+                                               MaxLines="1"
+                                               LineBreakMode="TailTruncation"
+                                           VerticalOptions="Center"/>
+                                    </StackLayout>
+                                </StackLayout>
+                            </StackLayout>
+
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
