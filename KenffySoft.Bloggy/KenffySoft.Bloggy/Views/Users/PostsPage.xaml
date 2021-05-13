@@ -6,9 +6,9 @@
              Title="Posts">
 
 
-    <ContentPage.BindingContext>
+    <!--<ContentPage.BindingContext>
         <vm:PostViewModel />
-    </ContentPage.BindingContext>
+    </ContentPage.BindingContext>-->
 
     <!--<ContentPage.ToolbarItems>
         <ToolbarItem IconImageSource="add.png" Order="Primary" Command="{Binding AddCommand}"/>

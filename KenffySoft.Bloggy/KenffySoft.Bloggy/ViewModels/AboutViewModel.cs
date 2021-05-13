@@ -12,8 +12,8 @@ namespace KenffySoft.Bloggy.ViewModels
 {
     public class AboutViewModel : BaseViewModel
     {
-        private string number = "+49 17671681034";
-        private string email = "kenffy10@gmail.com";
+        private string number = "+49 000000000";
+        private string email = "test@gmail.com";
         private string version = "Version 1.0.1";
 
         public string MemberId;
@@ -105,19 +105,19 @@ namespace KenffySoft.Bloggy.ViewModels
 
         private async void OnPosts(object obj)
         {
-            var detail = new PostsPage();
+            var detail = new PostsPage() { BindingContext = new PostViewModel(MemberId) };
             await Shell.Current.Navigation.PushAsync(detail); //new BloggyDetailPage(CurrentUser, 0)
         }
 
         private async void OnFollowers(object obj)
         {
-            var detail = new FollowersPage();
+            var detail = new FollowersPage(){BindingContext = new FollowersViewModel(MemberId)};
             await Shell.Current.Navigation.PushAsync(detail); //new BloggyDetailPage(CurrentUser, 1)
         }
 
         private async void OnFollowing(object obj)
         {
-            var detail = new FollowingPage();
+            var detail = new FollowingPage(){BindingContext = new FollowingViewModel(MemberId)};
             await Shell.Current.Navigation.PushAsync(detail); //new BloggyDetailPage(CurrentUser, 1)
         }
 
@@ -169,7 +169,7 @@ namespace KenffySoft.Bloggy.ViewModels
 
                 if (CurrentUser != null)
                 {
-
+                    MemberId = CurrentUser.Id;
                     Title = CurrentUser.Name;
                     //Title = "About " + CurrentUser.Name;
                     Version = CurrentUser.Name + ": Version 1.0.0";

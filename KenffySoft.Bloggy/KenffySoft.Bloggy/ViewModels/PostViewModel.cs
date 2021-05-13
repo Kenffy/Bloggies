@@ -15,6 +15,7 @@ namespace KenffySoft.Bloggy.ViewModels
     {
         private int pageNumber = 0;
         private readonly int pageSize = 10;
+        private readonly string MemberId;
         private PostDetail selectedPost;
         private ObservableCollection<PostDetail> postList;
         public Command RefreshCommand { get; }
@@ -24,7 +25,7 @@ namespace KenffySoft.Bloggy.ViewModels
         public Command LoadMoreCommand { get; }
         public Command<object> SelectedCommand { get; }
 
-        public PostViewModel()
+        public PostViewModel(string Id = null)
         {
             selectedPost = new PostDetail();
             postList = new ObservableCollection<PostDetail>();
@@ -34,6 +35,7 @@ namespace KenffySoft.Bloggy.ViewModels
             DeleteCommand = new Command<object>(OnDeletePost);
             SelectedCommand = new Command<object>(OnSelected);
             LoadMoreCommand = new Command(LoadMorePosts);
+            MemberId = Id;
             LoadPostAsync();
         }
 
@@ -140,7 +142,7 @@ namespace KenffySoft.Bloggy.ViewModels
             try
             {
                 pageNumber++;
-                var posts = await BloggyServices.GetAllPostsByIdAsync(pageNumber, pageSize);
+                var posts = await BloggyServices.GetAllPostsByIdAsync(MemberId,pageNumber, pageSize);
                 foreach (var post in posts)
                 {
                     PostList.Add(post);

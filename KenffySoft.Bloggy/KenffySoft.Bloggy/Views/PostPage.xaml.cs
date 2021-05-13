@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KenffySoft.Bloggy.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,7 @@ namespace KenffySoft.Bloggy.Views
         public PostPage()
         {
             InitializeComponent();
+            BindingContext = new PostViewModel();
         }
     }
 }

@@ -231,7 +231,7 @@
 
                                             </Label>
                                             <StackLayout.GestureRecognizers>
-                                                <TapGestureRecognizer Command="{Binding OnSMSCommand}"/>
+                                                <TapGestureRecognizer Command="{Binding OnCallCommand}"/>
                                             </StackLayout.GestureRecognizers>
                                         </StackLayout>
                                     </ViewCell>

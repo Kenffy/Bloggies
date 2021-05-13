@@ -13,14 +13,16 @@ namespace KenffySoft.Bloggy.ViewModels
     {
         private int pageNumber = 0;
         private int pageSize = 20;
+        private string memberId;
 
         private Models.Bloggy selectedMember;
         private ObservableCollection<Models.Bloggy> followersCollection;
 
-        public FollowersViewModel()
+        public FollowersViewModel(string Id)
         {
             selectedMember = new Models.Bloggy();
             followersCollection = new ObservableCollection<Models.Bloggy>();
+            memberId = Id;
             Init();
         }
 
@@ -47,7 +49,7 @@ namespace KenffySoft.Bloggy.ViewModels
             try
             {
                 pageNumber++;
-                var members = await BloggyServices.GetFollowersAsync(pageNumber, pageSize);
+                var members = await BloggyServices.GetFollowersAsync(memberId,pageNumber, pageSize);
                 foreach (var member in members)
                 {
                     FollowersCollection.Add(member);

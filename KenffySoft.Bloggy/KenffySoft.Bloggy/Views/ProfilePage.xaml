@@ -35,7 +35,7 @@
                         <xct:AvatarView 
                             HorizontalOptions="CenterAndExpand"
                             VerticalOptions="CenterAndExpand"
-                            Text="D"  
+                            Text="{Binding Avatar}"  
                             Source="{Binding ProfileImage}"  
                             Color="Green" 
                             TextColor="White" 
