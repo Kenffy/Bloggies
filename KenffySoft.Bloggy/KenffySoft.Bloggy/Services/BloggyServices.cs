@@ -248,18 +248,6 @@ namespace KenffySoft.Bloggy.Services
                 }
             }
 
-            //foreach (var blog in members)
-            //{
-            //    foreach(var follower in followers)
-            //    {
-            //        if (blog.Id == follower)
-            //        {
-            //            bloggies.Add(blog);
-            //        }
-            //    }
-                
-            //}
-
             var filterBloggies = bloggies.Skip((pageNumber - 1) * pageSize).Take(pageSize).OrderByDescending(m => m.Name).ToList();
             return new ObservableCollection<Models.Bloggy>(filterBloggies);
         }
@@ -311,18 +299,6 @@ namespace KenffySoft.Bloggy.Services
                 }
             }
 
-            //foreach (var blog in members)
-            //{
-            //    foreach (var following in followings)
-            //    {
-            //        if (blog.Id == following)
-            //        {
-            //            bloggies.Add(blog);
-            //        }
-            //    }
-
-            //}
-
             var filterBloggies = bloggies.Skip((pageNumber - 1) * pageSize).Take(pageSize).OrderByDescending(m => m.Name).ToList();
             return new ObservableCollection<Models.Bloggy>(filterBloggies);
         }
@@ -363,6 +339,8 @@ namespace KenffySoft.Bloggy.Services
                 var filename = Guid.NewGuid() + ".png";
                 Stream fs = new MemoryStream(ImageArray);
                 var task = await firebaseStorage.Child("images/profiles").Child(filename).PutAsync(fs, cancelToken.Token);
+
+                await firebaseStorage.Child("images/profiles").Child(user.ProfileImage).DeleteAsync();
                 user.ProfileImage = await firebaseStorage.Child("images/profiles").Child(filename).GetDownloadUrlAsync();
             }
 
@@ -433,6 +411,7 @@ namespace KenffySoft.Bloggy.Services
                 var filename = Guid.NewGuid() + ".png";
                 Stream fs = new MemoryStream(model.ImageArray);
                 var task = await firebaseStorage.Child("images/posts").Child(filename).PutAsync(fs, cancelToken.Token);
+                await firebaseStorage.Child("images/posts").Child(post.PostImage).DeleteAsync();
                 post.PostImage = await firebaseStorage.Child("images/posts").Child(filename).GetDownloadUrlAsync();
             }
             await client.Child("Posts").PostAsync(post);
@@ -465,7 +444,7 @@ namespace KenffySoft.Bloggy.Services
 
             var notification = new Notification()
             {
-                Id = new Guid(),
+                Id = Guid.NewGuid(),
                 SenderId = senderId,
                 ReceiverId = "",
                 Message = message,
@@ -672,6 +651,7 @@ namespace KenffySoft.Bloggy.Services
                 var filename = Guid.NewGuid() + ".png";
                 Stream fs = new MemoryStream(model.ImageArray);
                 var task = await firebaseStorage.Child("images/posts").Child(filename).PutAsync(fs, cancelToken.Token);
+                await firebaseStorage.Child("images/posts").Child(post.PostImage).DeleteAsync();
                 post.PostImage = await firebaseStorage.Child("images/posts").Child(filename).GetDownloadUrlAsync();
             }
 
