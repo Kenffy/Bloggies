@@ -3,9 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:helpers="clr-namespace:KenffySoft.Bloggy.Helpers" 
              xmlns:vm="clr-namespace:KenffySoft.Bloggy.ViewModels" 
-             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" xmlns:xct="http://xamarin.com/schemas/2020/toolkit" xmlns:control="clr-namespace:KenffySoft.Bloggy.Controls"
+             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms" 
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
+             xmlns:control="clr-namespace:KenffySoft.Bloggy.Controls"
              x:Class="KenffySoft.Bloggy.Views.HomePage"
-             Title="Bloggies">
+             Title="Bloggies"
+             BackgroundColor="#ecf0f1">
 
     <ContentPage.BindingContext>
         <vm:HomeViewModel />
@@ -31,12 +34,6 @@
         </DataTemplate>
     </ContentPage.Resources>
 
-    <!--<ContentPage.ToolbarItems>
-        <ToolbarItem IconImageSource="search.png" IsEnabled="{Binding IsSearchEnable}" Command="{Binding OnSearchCommand}" Order="Primary"/>
-        <ToolbarItem Text="Cancel" IsEnabled="{Binding IsCancelSearchEnable}" Command="{Binding OnCancelSearchCommand}" Order="Primary"/>
-        <ToolbarItem IconImageSource="notifications.png" Command="{Binding NotificationCommand}" Order="Primary"/>
-    </ContentPage.ToolbarItems>-->
-
     <Shell.SearchHandler>
         <control:PostSearchHandler 
             Placeholder="Enter search term"
@@ -45,12 +42,13 @@
             ItemTemplate="{StaticResource PostSearchTemplate}"/>
     </Shell.SearchHandler>
 
-    <!--IsRefreshing="{Binding IsBusy, Mode=OneWay}"-->
     <ContentPage.Content>
         <RefreshView Command="{Binding RefreshCommand}"
                      IsRefreshing="{Binding IsBusy, Mode=OneWay}"
-                     RefreshColor="{StaticResource TabIconSelected}">
-            <CollectionView Margin="5"
+                     RefreshColor="{StaticResource TabIconSelected}"
+                         Grid.Row="0">
+
+            <CollectionView Margin="10,10,10,0"
                         x:Name="PostList" 
                         ItemsSource="{Binding PostCollection}"
                         SelectedItem="{Binding SelectedPost, Mode=TwoWay}"
@@ -58,78 +56,105 @@
                         HorizontalOptions="Center" 
                         SelectionMode="Single"
                         SelectionChangedCommand="{Binding SelectedCommand}"
-                        RemainingItemsThreshold="4"
+                        RemainingItemsThreshold="0"
                         RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
 
                 <CollectionView.ItemsLayout>
                     <GridItemsLayout Orientation="Vertical" Span="1"/>
                 </CollectionView.ItemsLayout>
+
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <StackLayout BackgroundColor="White" Margin="0,5">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="100"/>
-                                </Grid.ColumnDefinitions>
+                        <StackLayout Margin="0,6">
 
-                                <StackLayout Grid.Column="0" Margin="10">
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-
-                                        <StackLayout Grid.Row="0">
+                            <Frame Padding="0" CornerRadius="5">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="200"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Frame Grid.Row="0"
+                                           Padding="0" VerticalOptions="CenterAndExpand">
+                                        <ff:CachedImage Source="{Binding PostImage}" HeightRequest="300" Aspect="AspectFill"/>
+                                    </Frame>
+                                    <StackLayout Grid.Row="1">
+                                        <StackLayout Margin="15,10,15,0" Spacing="5">
                                             <Label Text="{Binding Title}" 
                                                    FontAttributes="Bold" 
                                                    TextColor="{StaticResource TextPrimary}"
-                                                   FontSize="18" MaxLines="2"
+                                                   FontSize="18" MaxLines="3"
                                                    LineBreakMode="TailTruncation"/>
-                                            <Label Text="{Binding PostedAt}"/>
+                                            <Label Text="{Binding Body}" 
+                                               MaxLines="2"
+                                               FontSize="16"
+                                               LineBreakMode="TailTruncation"
+                                               TextColor="{StaticResource TextPrimary}"/>
                                         </StackLayout>
 
-                                        <StackLayout Grid.Row="1" Margin="0,5">
-                                            <StackLayout>
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <Image Source="{Binding LikeImage}" VerticalOptions="CenterAndExpand"
+                                    </StackLayout>
+                                    <StackLayout Grid.Row="2">
+                                        <StackLayout Margin="10">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackLayout Grid.Column="0">
+                                                    <StackLayout Orientation="Horizontal"
+                                                                 VerticalOptions="CenterAndExpand"
+                                                                 HorizontalOptions="StartAndExpand"
+                                                                 Spacing="0">
+                                                        <xct:AvatarView Text="{Binding Avatar}"  
+                                                                    Source="{Binding ProfileImage}"  
+                                                                    Size="40" Color="{Binding AvatarColor}" Margin="5"/>
+
+                                                        <StackLayout Spacing="0" VerticalOptions="CenterAndExpand">
+                                                            <Label x:Name="lbBloggyName" Text="{Binding BloggyName}"
+                                                                   VerticalOptions="CenterAndExpand"
+                                                        FontSize="Small" FontAttributes="Bold"
+                                                           TextColor="{StaticResource TextPrimary}"/>
+                                                            <Label x:Name="lbPostedAt" FontSize="12"
+                                                                   VerticalOptions="CenterAndExpand"
+                                                           Text="{Binding PostedAt}"/>
+                                                        </StackLayout>
+                                                    </StackLayout>
+
+                                                </StackLayout>
+                                                <StackLayout Grid.Column="1">
+                                                    <Grid HorizontalOptions="EndAndExpand"
+                                                          VerticalOptions="CenterAndExpand">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <Image Source="{Binding LikeImage}" VerticalOptions="CenterAndExpand"
                                                                        HeightRequest="20" Aspect="AspectFit" Grid.Column="0"/>
-                                                    <Label Text="{Binding NumLikes}" Grid.Column="1" 
+                                                        <Label Text="{Binding NumLikes}" Grid.Column="1" 
                                                            VerticalOptions="CenterAndExpand"
                                                            TextColor="{StaticResource TextPrimary}"/>
-                                                    <Image Source="comment.png" VerticalOptions="CenterAndExpand" Margin="15,0,0,0"
+                                                        <Image Source="{Binding CommentImage}" VerticalOptions="CenterAndExpand" Margin="15,0,0,0"
                                                                        HeightRequest="20" Aspect="AspectFit" Grid.Column="2"/>
-                                                    <Label Text="{Binding NumComments}" Grid.Column="3" 
+                                                        <Label Text="{Binding NumComments}" Grid.Column="3" 
                                                            VerticalOptions="CenterAndExpand"
                                                            TextColor="{StaticResource TextPrimary}"/>
-                                                </Grid>
-                                            </StackLayout>
+                                                    </Grid>
+                                                </StackLayout>
+                                            </Grid>
                                         </StackLayout>
-                                    </Grid>
 
-                                </StackLayout>
-
-                                <StackLayout Grid.Column="1" Margin="5">
-                                    <Frame CornerRadius="5" Padding="-1" VerticalOptions="CenterAndExpand">
-                                        <ff:CachedImage Source="{Binding PostImage}" Aspect="AspectFill" HeightRequest="100"/>
-                                    </Frame>
-                                </StackLayout>
-                            </Grid>
+                                    </StackLayout>
+                                </Grid>
+                            </Frame>
                         </StackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
 
             </CollectionView>
-
-            <!--<ActivityIndicator HorizontalOptions="Center" VerticalOptions="Center"
-                          Color="#f39c12" IsRunning="True" x:Name="IsInActivity"/>-->
-
         </RefreshView>
 
     </ContentPage.Content>

@@ -68,7 +68,6 @@ namespace KenffySoft.Bloggy.ViewModels
             try
             {
                 PostCollection = await BloggyServices.GetPostsAsync();
-                //BloggyCollection = await BloggyServices.GetAllBloggiesAsync();
             }
             catch (Exception ex)
             {

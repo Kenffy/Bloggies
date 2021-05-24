@@ -28,7 +28,7 @@
             <ListView ItemsSource="{Binding PostList}"
                         HasUnevenRows="True" 
                         IsPullToRefreshEnabled="True"
-                        SeparatorVisibility="None"
+                        SeparatorVisibility="Default"
                         RefreshCommand="{Binding RefreshCommand}"
                         IsRefreshing="{Binding IsBusy, Mode=OneWay}"
                         SelectedItem="{Binding SelectedPost, Mode=TwoWay}"
@@ -47,12 +47,67 @@
 
                             <StackLayout BackgroundColor="White" Margin="0,5">
                                 <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="100"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackLayout Grid.Column="0" Margin="10">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <StackLayout Grid.Row="0">
+                                            <Label Text="{Binding Title}" 
+                                                   FontAttributes="Bold" 
+                                                   TextColor="{StaticResource TextPrimary}"
+                                                   FontSize="18" MaxLines="2"
+                                                   LineBreakMode="TailTruncation"/>
+                                            <Label Text="{Binding PostedAt}"/>
+                                        </StackLayout>
+
+                                        <StackLayout Grid.Row="1" Margin="0,5">
+                                            <StackLayout>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Image Source="{Binding LikeImage}" VerticalOptions="CenterAndExpand"
+                                                                       HeightRequest="20" Aspect="AspectFit" Grid.Column="0"/>
+                                                    <Label Text="{Binding NumLikes}" Grid.Column="1" 
+                                                           VerticalOptions="CenterAndExpand"
+                                                           TextColor="{StaticResource TextPrimary}"/>
+                                                    <Image Source="{Binding CommentImage}" VerticalOptions="CenterAndExpand" Margin="15,0,0,0"
+                                                                       HeightRequest="20" Aspect="AspectFit" Grid.Column="2"/>
+                                                    <Label Text="{Binding NumComments}" Grid.Column="3" 
+                                                           VerticalOptions="CenterAndExpand"
+                                                           TextColor="{StaticResource TextPrimary}"/>
+                                                </Grid>
+                                            </StackLayout>
+                                        </StackLayout>
+                                    </Grid>
+
+                                </StackLayout>
+
+                                <StackLayout Grid.Column="1" Margin="5">
+                                    <Frame CornerRadius="5" Padding="-1" VerticalOptions="CenterAndExpand">
+                                        <ff:CachedImage Source="{Binding PostImage}" Aspect="AspectFill" HeightRequest="100"/>
+                                    </Frame>
+                                </StackLayout>
+                            </Grid>
+                                
+                                <!--<Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="100"/>
                                     </Grid.ColumnDefinitions>
 
-                                    <!--Title-->
+                                    --><!--Title--><!--
                                     <StackLayout Grid.Column="0" Margin="10">
                                         <Grid>
                                             <Grid.RowDefinitions>
@@ -75,13 +130,13 @@
 
                                     </StackLayout>
 
-                                    <!--Picture-->
+                                    --><!--Picture--><!--
                                     <StackLayout Grid.Column="1" Margin="5">
                                         <Frame CornerRadius="5" Padding="-1" VerticalOptions="CenterAndExpand">
                                             <ff:CachedImage Source="{Binding PostImage}" Aspect="AspectFill" HeightRequest="100"/>
                                         </Frame>
                                     </StackLayout>
-                                </Grid>
+                                </Grid>-->
                             </StackLayout>
 
                             <ViewCell.ContextActions>
@@ -95,15 +150,17 @@
                 </ListView.ItemTemplate>
 
                 <ListView.Footer>
-                    <StackLayout HorizontalOptions="Center"
-                                 VerticalOptions="EndAndExpand">
-                        <Label Text="Load More..." FontSize="Medium" Margin="12"
+                    <Frame HorizontalOptions="FillAndExpand"
+                           BackgroundColor="#FAF8FA"
+                           VerticalOptions="EndAndExpand"
+                           Margin="5">
+                        <Label Text="Load more posts..." FontSize="Medium"
                                HorizontalOptions="Center" VerticalOptions="EndAndExpand"/>
 
-                        <StackLayout.GestureRecognizers>
+                        <Frame.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding LoadMoreCommand}"/>
-                        </StackLayout.GestureRecognizers>
-                    </StackLayout>
+                        </Frame.GestureRecognizers>
+                    </Frame>
                 </ListView.Footer>
             </ListView>
 

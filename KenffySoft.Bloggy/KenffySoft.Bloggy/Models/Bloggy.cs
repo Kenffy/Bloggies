@@ -13,6 +13,7 @@ namespace KenffySoft.Bloggy.Models
         public string Email { get; set; }
         public string Description { get; set; }
         public string ProfileImage { get; set; }
+        public string ProfileImageName { get; set; }
         public string Followers { get; set; }
         public int NumFollowers { get; set; }
     }

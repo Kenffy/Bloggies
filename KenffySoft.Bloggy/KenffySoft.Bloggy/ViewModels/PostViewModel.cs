@@ -5,6 +5,7 @@ using KenffySoft.Bloggy.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -17,6 +18,7 @@ namespace KenffySoft.Bloggy.ViewModels
         private readonly int pageSize = 10;
         private readonly string MemberId;
         private PostDetail selectedPost;
+        private ObservableCollection<PostDetail> Posts;
         private ObservableCollection<PostDetail> postList;
         public Command RefreshCommand { get; }
         public Command AddCommand { get; }
@@ -28,6 +30,7 @@ namespace KenffySoft.Bloggy.ViewModels
         public PostViewModel(string Id = null)
         {
             selectedPost = new PostDetail();
+            Posts = new ObservableCollection<PostDetail>();
             postList = new ObservableCollection<PostDetail>();
             RefreshCommand = new Command(OnRefresh);
             AddCommand = new Command(OnCreatePost);
@@ -51,10 +54,14 @@ namespace KenffySoft.Bloggy.ViewModels
             set => SetProperty(ref selectedPost, value);
         }
 
-        private void OnSelected(object obj)
+        private async void OnSelected(object obj)
         {
             if (SelectedPost == null)
                 return;
+
+            //MessagingCenter.Subscribe<PostDetailViewModel, bool>(this, "UpsertPostStatus", OnRefreshPost);
+            await Shell.Current.GoToAsync($"{nameof(PostDetailPage)}?{nameof(PostDetailViewModel.PostId)}={SelectedPost.Id}");
+            //MessagingCenter.Unsubscribe<PostDetailViewModel>(this, "UpsertPostStatus");
             SelectedPost = null;
         }
 
@@ -73,6 +80,7 @@ namespace KenffySoft.Bloggy.ViewModels
             if (arg2 == true)
             {
                 pageNumber = 0;
+                Posts.Clear();
                 PostList.Clear();
                 LoadPostAsync();
             }
@@ -95,6 +103,7 @@ namespace KenffySoft.Bloggy.ViewModels
         {
             IsBusy = true;
             pageNumber = 0;
+            Posts.Clear();
             PostList.Clear();
             LoadPostAsync();
             IsBusy = false;
@@ -115,6 +124,7 @@ namespace KenffySoft.Bloggy.ViewModels
                     await BloggyServices.DeletePostAsync(post);
                     await Application.Current.MainPage.DisplayAlert("DELETE", "Post successfully deleted", "Alright");
                     pageNumber = 0;
+                    Posts.Clear();
                     PostList.Clear();
                     LoadPostAsync();
                 }
@@ -127,7 +137,15 @@ namespace KenffySoft.Bloggy.ViewModels
 
         private void LoadMorePosts(object obj)
         {
-            LoadPostAsync();
+            if (Posts.Count > 0 && PostList.Count < Posts.Count)
+            {
+                pageNumber++;
+                var tempPosts = Posts.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                foreach (var post in tempPosts)
+                {
+                    PostList.Add(post);
+                }
+            }
         }
 
         private async void LoadPostAsync()
@@ -141,12 +159,18 @@ namespace KenffySoft.Bloggy.ViewModels
 
             try
             {
+                Posts = await BloggyServices.GetAllPostsByIdAsync(MemberId);
+
+                if (Posts.Count == 0)
+                    return;
+
                 pageNumber++;
-                var posts = await BloggyServices.GetAllPostsByIdAsync(MemberId,pageNumber, pageSize);
-                foreach (var post in posts)
+                var tempPosts = Posts.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                foreach (var post in tempPosts)
                 {
                     PostList.Add(post);
                 }
+
             }
             catch (Exception ex)
             {

@@ -35,7 +35,6 @@ namespace KenffySoft.Bloggy.Controls
             try
             {
                 PostItemsSource = await BloggyServices.GetPostsAsync();
-                //BloggyCollection = await BloggyServices.GetAllBloggiesAsync();
             }
             catch (Exception ex)
             {

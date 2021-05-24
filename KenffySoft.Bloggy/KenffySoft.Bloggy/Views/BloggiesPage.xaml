@@ -28,8 +28,10 @@
                                                             FontSize="Medium" FontAttributes="Bold">
                         </Label>
 
-                        <Label Text="{Binding Description}" 
+                        <Label Text="{Binding Description}" Margin="5"
                                VerticalOptions="StartAndExpand"
+                               MaxLines="2"
+                               LineBreakMode="TailTruncation"
                                FontSize="Body" HorizontalOptions="StartAndExpand"/>
                     </StackLayout>
 

@@ -39,6 +39,7 @@ namespace KenffySoft.Bloggy.Services
                 AvatarColor = BloggyColor.GetRandomHexColor(),
                 Email = model.Email,
                 ProfileImage = "",
+                ProfileImageName = "",
                 Role = BloggyConstant.UserRole,
                 PhoneNumber = "",
                 Followers = ",",
@@ -71,6 +72,11 @@ namespace KenffySoft.Bloggy.Services
                             .OnceAsync<Member>()).FirstOrDefault
                             (a => a.Object.Id == token.User.LocalId);
 
+            if (string.IsNullOrEmpty(member.Object.ProfileImage)) 
+            {
+                member.Object.ProfileImage = "defaultprofile.png";
+            }
+
             return member.Object;
         }
 
@@ -83,6 +89,11 @@ namespace KenffySoft.Bloggy.Services
             var member = (await client.Child("Members")
             .OnceAsync<Member>()).FirstOrDefault
             (a => a.Object.Id == Id);
+
+            if (string.IsNullOrEmpty(member.Object.ProfileImage))
+            {
+                member.Object.ProfileImage = "defaultprofile.png";
+            }
 
             return member.Object;
         }
@@ -109,6 +120,11 @@ namespace KenffySoft.Bloggy.Services
             var member = (await client.Child("Members")
             .OnceAsync<Member>()).FirstOrDefault
             (a => a.Object.Id == Id);
+
+            if (string.IsNullOrEmpty(member.Object.ProfileImage))
+            {
+                member.Object.ProfileImage = "defaultprofile.png";
+            }
 
             return member.Object.ProfileImage;
         }
@@ -157,7 +173,7 @@ namespace KenffySoft.Bloggy.Services
                       AvatarColor = item.Object.AvatarColor,
                       Email = item.Object.Email,
                       Description = item.Object.Description,
-                      ProfileImage = item.Object.ProfileImage,
+                      ProfileImage = string.IsNullOrEmpty(item.Object.ProfileImage) ? "defaultprofile.png" : item.Object.ProfileImage,
                       Followers = item.Object.Followers,
                       NumFollowers = item.Object.NumFollowers
                   }).Where(m => m.Email != authMember.Email).ToList();
@@ -182,7 +198,7 @@ namespace KenffySoft.Bloggy.Services
                       AvatarColor = item.Object.AvatarColor,
                       Email = item.Object.Email,
                       Description = item.Object.Description,
-                      ProfileImage = item.Object.ProfileImage,
+                      ProfileImage = string.IsNullOrEmpty(item.Object.ProfileImage) ? "defaultprofile.png" : item.Object.ProfileImage,
                       Followers = item.Object.Followers,
                       NumFollowers = item.Object.NumFollowers
                   }).Where(m => m.Email != authMember.Email).ToList();
@@ -234,7 +250,7 @@ namespace KenffySoft.Bloggy.Services
                       AvatarColor = item.Object.AvatarColor,
                       Email = item.Object.Email,
                       Description = item.Object.Description,
-                      ProfileImage = item.Object.ProfileImage,
+                      ProfileImage = string.IsNullOrEmpty(item.Object.ProfileImage) ? "defaultprofile.png" : item.Object.ProfileImage,
                       Followers = item.Object.Followers,
                       NumFollowers = item.Object.NumFollowers
                   }).Where(m => m.Email != member.Email).ToList();
@@ -285,7 +301,7 @@ namespace KenffySoft.Bloggy.Services
                       AvatarColor = item.Object.AvatarColor,
                       Email = item.Object.Email,
                       Description = item.Object.Description,
-                      ProfileImage = item.Object.ProfileImage,
+                      ProfileImage = string.IsNullOrEmpty(item.Object.ProfileImage) ? "defaultprofile.png" : item.Object.ProfileImage,
                       Followers = item.Object.Followers,
                       NumFollowers = item.Object.NumFollowers
                   }).Where(m => m.Email != member.Email).ToList();
@@ -338,10 +354,13 @@ namespace KenffySoft.Bloggy.Services
             {
                 var filename = Guid.NewGuid() + ".png";
                 Stream fs = new MemoryStream(ImageArray);
+                if (!string.IsNullOrEmpty(user.ProfileImageName))
+                {
+                    await firebaseStorage.Child("images/profiles").Child(user.ProfileImageName).DeleteAsync();
+                }
                 var task = await firebaseStorage.Child("images/profiles").Child(filename).PutAsync(fs, cancelToken.Token);
-
-                await firebaseStorage.Child("images/profiles").Child(user.ProfileImage).DeleteAsync();
                 user.ProfileImage = await firebaseStorage.Child("images/profiles").Child(filename).GetDownloadUrlAsync();
+                user.ProfileImageName = filename;
             }
 
             await client.Child("Members").Child(toUpdateMember.Key).PutAsync(user);
@@ -378,6 +397,9 @@ namespace KenffySoft.Bloggy.Services
             // update count followers / following for both.
             await client.Child("Members").Child(authMember.Key).PutAsync(updatedAuthMember);
             await client.Child("Members").Child(bloggy.Key).PutAsync(updatedBloggy);
+
+            var msg = updatedAuthMember.Name + " follow " + updatedBloggy.Name + "'s blog.";
+            await NotifyFollowers(token.User.LocalId, updatedBloggy.Id, msg, BloggyConstant.FollowBlog);
         }
 
         #endregion
@@ -402,6 +424,7 @@ namespace KenffySoft.Bloggy.Services
                 CreatedAt = DateTime.Now,
                 Likes = ",",
                 PostImage = "",
+                PostImageName = "",
                 MemberId = token.User.LocalId,
                 IsPublicPost = model.IsPublicPost
             };
@@ -410,9 +433,13 @@ namespace KenffySoft.Bloggy.Services
             {
                 var filename = Guid.NewGuid() + ".png";
                 Stream fs = new MemoryStream(model.ImageArray);
+                if (!string.IsNullOrEmpty(post.PostImageName))
+                {
+                    await firebaseStorage.Child("images/posts").Child(post.PostImageName).DeleteAsync();
+                }
                 var task = await firebaseStorage.Child("images/posts").Child(filename).PutAsync(fs, cancelToken.Token);
-                await firebaseStorage.Child("images/posts").Child(post.PostImage).DeleteAsync();
                 post.PostImage = await firebaseStorage.Child("images/posts").Child(filename).GetDownloadUrlAsync();
+                post.PostImageName = filename;
             }
             await client.Child("Posts").PostAsync(post);
 
@@ -421,7 +448,7 @@ namespace KenffySoft.Bloggy.Services
                     (a => a.Object.Id == token.User.LocalId);
 
             var user = toUpdateUser.Object;
-            user.NumPosts += 1; // await GetNumPostsAsync();
+            user.NumPosts += 1;
 
             await client.Child("Members").Child(toUpdateUser.Key).PutAsync(user);
 
@@ -484,13 +511,15 @@ namespace KenffySoft.Bloggy.Services
                 IsPublicPost = item.Object.IsPublicPost,
                 CreatedAt = item.Object.CreatedAt,
                 PostedAt = BloggyConstant.GetTimeMessage(item.Object.CreatedAt),
-                PostImage = item.Object.PostImage,
+                PostImage = string.IsNullOrEmpty(item.Object.PostImage) ? "defaultImage.png" : item.Object.PostImage,
+                PostImageName = item.Object.PostImageName,
                 NumLikes = item.Object.NumLikes,
                 IsLikedByMe = item.Object.Likes.Contains(token.User.LocalId),
                 LikeImage = item.Object.Likes.Contains(token.User.LocalId) ? "liked.png" : "unliked.png",
+                CommentImage = item.Object.NumComments > 0 ? "comment2.png" : "comment.png",
                 NumComments = item.Object.NumComments,
                 Details = item.Object.NumLikes.ToString() + " Like(s)    " + item.Object.NumComments.ToString() + " Comment(s)",
-                ProfileImage = member.Object.ProfileImage,
+                ProfileImage = string.IsNullOrEmpty(member.Object.ProfileImage) ? "defaultprofile.png" : member.Object.ProfileImage,
                 BloggyName = member.Object.Name,
                 Avatar = member.Object.Avatar,
                 AvatarColor = member.Object.AvatarColor,
@@ -520,25 +549,55 @@ namespace KenffySoft.Bloggy.Services
                       IsPublicPost = item.Object.IsPublicPost,
                       CreatedAt = item.Object.CreatedAt,
                       PostedAt = BloggyConstant.GetTimeMessage(item.Object.CreatedAt),
-                      PostImage = item.Object.PostImage,
+                      PostImage = string.IsNullOrEmpty(item.Object.PostImage) ? "defaultImage.png" : item.Object.PostImage,
+                      PostImageName = item.Object.PostImageName,
                       NumLikes = item.Object.NumLikes,
                       IsLikedByMe = item.Object.Likes.Contains(token.User.LocalId),
                       LikeImage = item.Object.Likes.Contains(token.User.LocalId) ? "liked.png" : "unliked.png",
+                      CommentImage = item.Object.NumComments > 0 ? "comment2.png" : "comment.png",
                       NumComments = item.Object.NumComments,
                       Details = item.Object.NumLikes.ToString() + " Like(s)    " + item.Object.NumComments.ToString() + " Comment(s)"
                   }).OrderByDescending(m => m.CreatedAt).ToList();
 
+            if (posts.Count == 0)
+            {
+                return null;
+            }
+
+
+            var members = (await client
+                  .Child("Members")
+                  .OnceAsync<Member>()).Select(item => new Models.Bloggy
+                  {
+                      Id = item.Object.Id,
+                      Name = item.Object.Name,
+                      Avatar = item.Object.Avatar,
+                      AvatarColor = item.Object.AvatarColor,
+                      Email = item.Object.Email,
+                      ProfileImage = string.IsNullOrEmpty(item.Object.ProfileImage) ? "defaultprofile.png" : item.Object.ProfileImage
+                  }).ToList();
+
+            foreach (var post in posts)
+            {
+                var member = members.Where(m => m.Id == post.MemberId).FirstOrDefault();
+                if (member != null)
+                {
+                    post.BloggyName = member.Name;
+                    post.ProfileImage = member.ProfileImage;
+                    post.Avatar = member.Avatar;
+                    post.AvatarColor = member.AvatarColor;
+                }
+            }
+
             return new ObservableCollection<PostDetail>(posts);
         }
-        public static async Task<ObservableCollection<PostDetail>> GetAllPostsAsync(int pageNumber, int pageSize)
+        public static async Task<ObservableCollection<PostDetail>> GetAllPostsAsync()
         {
             FirebaseAuthLink token = await GetRefreshLink();
             var client = new FirebaseClient(BloggyConstant.ConnectionString,
                 new FirebaseOptions { AuthTokenAsyncFactory = () => Task.FromResult(token.FirebaseToken) });
 
-            //var member = (await client.Child("Members")
-            //        .OnceAsync<Member>()).FirstOrDefault
-            //        (a => a.Object.Id == token.User.LocalId);
+            var postHelper = new PostHelper();
 
             var posts = (await client
                   .Child("Posts")
@@ -553,22 +612,55 @@ namespace KenffySoft.Bloggy.Services
                       IsPublicPost = item.Object.IsPublicPost,
                       CreatedAt = item.Object.CreatedAt,
                       PostedAt = BloggyConstant.GetTimeMessage(item.Object.CreatedAt),
-                      PostImage = item.Object.PostImage,
+                      PostImage = string.IsNullOrEmpty(item.Object.PostImage) ? "defaultImage.png" : item.Object.PostImage,
+                      PostImageName = item.Object.PostImageName,
                       NumLikes = item.Object.NumLikes,
                       IsLikedByMe = item.Object.Likes.Contains(token.User.LocalId),
                       LikeImage = item.Object.Likes.Contains(token.User.LocalId) ? "liked.png" : "unliked.png",
+                      CommentImage = item.Object.NumComments > 0 ? "comment2.png" : "comment.png",
                       NumComments = item.Object.NumComments,
                       Details = item.Object.NumLikes.ToString() + " Like(s)    " + item.Object.NumComments.ToString() + " Comment(s)"
                   }).OrderByDescending(m => m.CreatedAt).ToList();
 
-            var filterPosts = posts.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-            return new ObservableCollection<PostDetail>(filterPosts);
+            if (posts.Count == 0)
+            {
+                return null;
+            }
+
+
+            var members = (await client
+                  .Child("Members")
+                  .OnceAsync<Member>()).Select(item => new Models.Bloggy
+                  {
+                      Id = item.Object.Id,
+                      Name = item.Object.Name,
+                      Avatar = item.Object.Avatar,
+                      AvatarColor = item.Object.AvatarColor,
+                      Email = item.Object.Email,
+                      ProfileImage = string.IsNullOrEmpty(item.Object.ProfileImage) ? "defaultprofile.png" : item.Object.ProfileImage
+                  }).ToList();
+
+            foreach (var post in posts)
+            {
+                var member = members.Where(m => m.Id == post.MemberId).FirstOrDefault();
+                if (member != null)
+                {
+                    post.BloggyName = member.Name;
+                    post.ProfileImage = member.ProfileImage;
+                    post.Avatar = member.Avatar;
+                    post.AvatarColor = member.AvatarColor;
+                }
+            }
+
+            return new ObservableCollection<PostDetail>(posts);
         }
-        public static async Task<ObservableCollection<PostDetail>> GetAllPostsByIdAsync(string memberId, int pageNumber, int pageSize)
+        public static async Task<ObservableCollection<PostDetail>> GetAllPostsByIdAsync(string memberId)
         {
             FirebaseAuthLink token = await GetRefreshLink();
             var client = new FirebaseClient(BloggyConstant.ConnectionString,
                 new FirebaseOptions { AuthTokenAsyncFactory = () => Task.FromResult(token.FirebaseToken) });
+
+            var postHelper = new PostHelper();
 
             var MemberId = string.Empty;
             if (string.IsNullOrEmpty(memberId))
@@ -593,16 +685,46 @@ namespace KenffySoft.Bloggy.Services
                       IsPublicPost = item.Object.IsPublicPost,
                       CreatedAt = item.Object.CreatedAt,
                       PostedAt = BloggyConstant.GetTimeMessage(item.Object.CreatedAt),
-                      PostImage = item.Object.PostImage,
+                      PostImage = string.IsNullOrEmpty(item.Object.PostImage) ? "defaultImage.png" : item.Object.PostImage,
+                      PostImageName = item.Object.PostImageName,
                       NumLikes = item.Object.NumLikes,
                       IsLikedByMe = item.Object.Likes.Contains(token.User.LocalId),
                       LikeImage = item.Object.Likes.Contains(token.User.LocalId) ? "liked.png" : "unliked.png",
+                      CommentImage = item.Object.NumComments > 0 ? "comment2.png" : "comment.png",
                       NumComments = item.Object.NumComments,
                       Details = item.Object.NumLikes.ToString() + " Like(s)    " + item.Object.NumComments.ToString() + " Comment(s)"
                   }).OrderByDescending(m => m.CreatedAt).ToList();
 
-            var filterPosts = posts.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-            return new ObservableCollection<PostDetail>(filterPosts);
+            if(posts.Count == 0)
+            {
+                return null;
+            }
+
+            var members = (await client
+                  .Child("Members")
+                  .OnceAsync<Member>()).Select(item => new Models.Bloggy
+                  {
+                      Id = item.Object.Id,
+                      Name = item.Object.Name,
+                      Avatar = item.Object.Avatar,
+                      AvatarColor = item.Object.AvatarColor,
+                      Email = item.Object.Email,
+                      ProfileImage = string.IsNullOrEmpty(item.Object.ProfileImage) ? "defaultprofile.png" : item.Object.ProfileImage
+                  }).ToList();
+
+            foreach (var post in posts)
+            {
+                var member = members.Where(m => m.Id == post.MemberId).FirstOrDefault();
+                if (member != null)
+                {
+                    post.BloggyName = member.Name;
+                    post.ProfileImage = member.ProfileImage;
+                    post.Avatar = member.Avatar;
+                    post.AvatarColor = member.AvatarColor;    
+                }
+            }
+
+            return new ObservableCollection<PostDetail>(posts);
         }
 
         public static async Task DeletePostAsync(PostDetail model)
@@ -622,7 +744,7 @@ namespace KenffySoft.Bloggy.Services
                     (a => a.Object.Id == token.User.LocalId);
 
             var user = toUpdateUser.Object;
-            user.NumPosts -= 1; // await GetNumPostsAsync();
+            user.NumPosts -= 1;
 
             await client.Child("Members").Child(toUpdateUser.Key).PutAsync(user);
         }
@@ -650,9 +772,13 @@ namespace KenffySoft.Bloggy.Services
             {
                 var filename = Guid.NewGuid() + ".png";
                 Stream fs = new MemoryStream(model.ImageArray);
+                if (!string.IsNullOrEmpty(post.PostImageName))
+                {
+                    await firebaseStorage.Child("images/posts").Child(post.PostImageName).DeleteAsync();
+                }
                 var task = await firebaseStorage.Child("images/posts").Child(filename).PutAsync(fs, cancelToken.Token);
-                await firebaseStorage.Child("images/posts").Child(post.PostImage).DeleteAsync();
                 post.PostImage = await firebaseStorage.Child("images/posts").Child(filename).GetDownloadUrlAsync();
+                post.PostImageName = filename;
             }
 
             await client.Child("Posts").Child(toUpdatePost.Key).PutAsync(post);
@@ -666,9 +792,6 @@ namespace KenffySoft.Bloggy.Services
             FirebaseAuthLink token = await GetRefreshLink();
             var client = new FirebaseClient(BloggyConstant.ConnectionString,
                 new FirebaseOptions { AuthTokenAsyncFactory = () => Task.FromResult(token.FirebaseToken) });
-
-            //var authProvider = new FirebaseAuthProvider(new FirebaseConfig(BloggyConstant.WebAPIKey));
-            //var user = await authProvider.GetUserAsync(token.FirebaseToken);
 
             var comment = new Comment
             {
@@ -687,7 +810,6 @@ namespace KenffySoft.Bloggy.Services
 
             var post = toUpdatePost.Object;
             post.NumComments += 1;
-            //post.NumComments = await GetNumCommentByPostIdAsync(model.PostId);
             await client.Child("Posts").Child(toUpdatePost.Key).PutAsync(post);
 
             var userPost = (await client.Child("Members")
@@ -724,28 +846,40 @@ namespace KenffySoft.Bloggy.Services
             .AsObservable<Comment>()
             .AsObservableCollection();
 
+            var members = (await client
+                  .Child("Members")
+                  .OnceAsync<Member>()).Select(item => new Models.Bloggy
+                  {
+                      Id = item.Object.Id,
+                      Name = item.Object.Name,
+                      Avatar = item.Object.Avatar,
+                      AvatarColor = item.Object.AvatarColor,
+                      Email = item.Object.Email,
+                      ProfileImage = string.IsNullOrEmpty(item.Object.ProfileImage) ? "defaultprofile.png" : item.Object.ProfileImage
+                  }).ToList();
+
             foreach (var comment in comments)
             {
-                var member = (await client.Child("Members")
-                    .OnceAsync<Member>()).FirstOrDefault
-                    (a => a.Object.Email == comment.AddedBy);
-
-                var com = new CommentDetail
+                var member = members.Where(m => m.Email == comment.AddedBy).FirstOrDefault();
+                if (member != null)
                 {
-                    Id = comment.Id,
-                    Body = comment.Body,
-                    AddedBy = comment.AddedBy,
-                    PostId = comment.PostId,
-                    CreatedAt = comment.CreatedAt,
-                    MemberId = comment.MemberId,
-                    MemberName = member.Object.Name,
-                    ProfileImage = member.Object.ProfileImage,
-                    PostedAt = BloggyConstant.GetTimeMessage(comment.CreatedAt),
-                    Avatar = member.Object.Avatar,
-                    AvatarColor = member.Object.AvatarColor
-                };
+                    var com = new CommentDetail
+                    {
+                        Id = comment.Id,
+                        Body = comment.Body,
+                        AddedBy = comment.AddedBy,
+                        PostId = comment.PostId,
+                        CreatedAt = comment.CreatedAt,
+                        MemberId = comment.MemberId,
+                        MemberName = member.Name,
+                        ProfileImage = member.ProfileImage,
+                        PostedAt = BloggyConstant.GetTimeMessage(comment.CreatedAt),
+                        Avatar = member.Avatar,
+                        AvatarColor = member.AvatarColor
+                    };
 
-                commentList.Add(com);
+                    commentList.Add(com);
+                }
             }
 
             return new ObservableCollection<CommentDetail>(commentList);
@@ -771,28 +905,40 @@ namespace KenffySoft.Bloggy.Services
                     PostId = item.Object.PostId
                 }).Where(c => c.PostId == postId).ToList();
 
+            var members = (await client
+                  .Child("Members")
+                  .OnceAsync<Member>()).Select(item => new Models.Bloggy
+                  {
+                      Id = item.Object.Id,
+                      Name = item.Object.Name,
+                      Avatar = item.Object.Avatar,
+                      AvatarColor = item.Object.AvatarColor,
+                      Email = item.Object.Email,
+                      ProfileImage = string.IsNullOrEmpty(item.Object.ProfileImage) ? "defaultprofile.png" : item.Object.ProfileImage
+                  }).ToList();
+
             foreach (var comment in comments)
             {
-                var member = (await client.Child("Members")
-                    .OnceAsync<Member>()).FirstOrDefault
-                    (a => a.Object.Email == comment.AddedBy);
-
-                var com = new CommentDetail
+                var member = members.Where(m => m.Email == comment.AddedBy).FirstOrDefault();
+                if (member != null)
                 {
-                    Id = comment.Id,
-                    Body = comment.Body,
-                    AddedBy = comment.AddedBy,
-                    PostId = comment.PostId,
-                    CreatedAt = comment.CreatedAt,
-                    MemberId = comment.MemberId,
-                    MemberName = member.Object.Name,
-                    ProfileImage = member.Object.ProfileImage,
-                    PostedAt = BloggyConstant.GetTimeMessage(comment.CreatedAt),
-                    Avatar = member.Object.Avatar,
-                    AvatarColor = member.Object.AvatarColor
-                };
+                    var com = new CommentDetail
+                    {
+                        Id = comment.Id,
+                        Body = comment.Body,
+                        AddedBy = comment.AddedBy,
+                        PostId = comment.PostId,
+                        CreatedAt = comment.CreatedAt,
+                        MemberId = comment.MemberId,
+                        MemberName = member.Name,
+                        ProfileImage = member.ProfileImage,
+                        PostedAt = BloggyConstant.GetTimeMessage(comment.CreatedAt),
+                        Avatar = member.Avatar,
+                        AvatarColor = member.AvatarColor
+                    };
 
-                commentList.Add(com);
+                    commentList.Add(com);
+                }
             }
 
             return new ObservableCollection<CommentDetail>(commentList);
@@ -844,9 +990,6 @@ namespace KenffySoft.Bloggy.Services
             FirebaseAuthLink token = await GetRefreshLink();
             var client = new FirebaseClient(BloggyConstant.ConnectionString,
                 new FirebaseOptions { AuthTokenAsyncFactory = () => Task.FromResult(token.FirebaseToken) });
-
-            //var authProvider = new FirebaseAuthProvider(new FirebaseConfig(BloggyConstant.WebAPIKey));
-            //var user = await authProvider.GetUserAsync(token.FirebaseToken);
 
             var toUpdatePost = (await client.Child("Posts")
             .OnceAsync<Post>()).FirstOrDefault

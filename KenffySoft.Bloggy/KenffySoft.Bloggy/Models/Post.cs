@@ -11,6 +11,7 @@ namespace KenffySoft.Bloggy.Models
         public string Body { get; set; }
         public DateTime CreatedAt { get; set; }
         public string PostImage { get; set; }
+        public string PostImageName { get; set; }
         public string Likes { get; set; }
         public int NumLikes { get; set; }
         public int NumComments { get; set; }

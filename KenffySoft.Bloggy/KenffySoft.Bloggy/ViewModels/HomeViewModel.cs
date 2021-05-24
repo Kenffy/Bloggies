@@ -5,6 +5,7 @@ using KenffySoft.Bloggy.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -14,11 +15,12 @@ namespace KenffySoft.Bloggy.ViewModels
     public class HomeViewModel : BaseViewModel
     {
         private int pageNumber = 0;
-        private readonly int pageSize = 10;
+        private readonly int pageSize = 5;
         private bool isSearchEnable;
         private bool isCancelSearchEnable;
 
         private PostDetail selectedPost;
+        private ObservableCollection<PostDetail> Posts;
         private ObservableCollection<PostDetail> postCollection;
 
         public bool IsSearchEnable
@@ -57,6 +59,7 @@ namespace KenffySoft.Bloggy.ViewModels
             isSearchEnable = false;
             isCancelSearchEnable = true;
             selectedPost = new PostDetail();
+            Posts = new ObservableCollection<PostDetail>();
             postCollection = new ObservableCollection<PostDetail>();
             RefreshCommand = new Command(Refresh);
             LoadMoreCommand = new Command(LoadMore);
@@ -88,14 +91,24 @@ namespace KenffySoft.Bloggy.ViewModels
                 return;
             IsBusy = true;
             pageNumber = 0;
+            Posts.Clear();
             PostCollection.Clear();
             await LoadPostAsync();
             IsBusy = false;
         }
 
-        private async void LoadMore(object obj)
+        private void LoadMore(object obj)
         {
-            await LoadPostAsync();
+            //await LoadPostAsync();
+            if (Posts.Count > 0 && PostCollection.Count < Posts.Count)
+            {
+                pageNumber++;
+                var tempPosts = Posts.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                foreach (var post in tempPosts)
+                {
+                    PostCollection.Add(post);
+                }
+            }
         }
 
         private async void OnSelected(object obj)
@@ -114,13 +127,18 @@ namespace KenffySoft.Bloggy.ViewModels
             CheckInternetConnection();
             try
             {
+                Posts = await BloggyServices.GetAllPostsAsync();
+
+                if (Posts.Count == 0)
+                    return;
+
                 pageNumber++;
-                var posts = await BloggyServices.GetAllPostsAsync(pageNumber, pageSize);
-                //PostCollection.AddRange(posts);
-                foreach (var post in posts)
+                var tempPosts = Posts.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                foreach (var post in tempPosts)
                 {
                     PostCollection.Add(post);
                 }
+
             }
             catch (Exception ex)
             {
@@ -135,6 +153,7 @@ namespace KenffySoft.Bloggy.ViewModels
             if (arg2 == true)
             {
                 pageNumber = 0;
+                Posts.Clear();
                 PostCollection.Clear();
                 await LoadPostAsync();
             }

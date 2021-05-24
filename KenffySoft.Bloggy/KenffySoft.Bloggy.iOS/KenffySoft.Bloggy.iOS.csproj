@@ -277,6 +277,9 @@
   <ItemGroup>
     <BundleResource Include="Resources\defaultprofile.png" />
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\defaultImage.png" />
+  </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>
       <UserProperties TriggeredFromHotReload="False" />

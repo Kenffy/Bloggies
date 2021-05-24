@@ -32,11 +32,14 @@ namespace KenffySoft.Bloggy.ViewModels
         {
             if (CurrentUser != null && !string.IsNullOrEmpty(CurrentUser.ProfileImage))
             {
-                //var client = new System.Net.Http.HttpClient();
-                //System.IO.Stream imagestream = await client.GetStreamAsync(CurrentUser.ProfileImage);
-                //ProfileImage.Source = ImageSource.FromStream(() => imagestream);
-
-                ProfileImage.Source = ImageSource.FromUri(new Uri(CurrentUser.ProfileImage));
+                if(CurrentUser.ProfileImage == "defaultprofile.png")
+                {
+                    ProfileImage.Source = currentUser.ProfileImage;
+                }
+                else
+                {
+                    ProfileImage.Source = ImageSource.FromUri(new Uri(CurrentUser.ProfileImage));
+                }
             }
         }
 
