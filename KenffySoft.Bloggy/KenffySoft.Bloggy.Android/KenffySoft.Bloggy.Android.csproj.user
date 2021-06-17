@@ -4,5 +4,6 @@
     <SelectedDevice>nexus_4_marshmallow_6_0_-_api_23</SelectedDevice>
     <DefaultDevice>nexus_4_marshmallow_6_0_-_api_23</DefaultDevice>
     <AndroidDesignerPreferredTheme>MainTheme</AndroidDesignerPreferredTheme>
+    <ActiveDebugProfile>nexus_4_marshmallow_6_0_-_api_23</ActiveDebugProfile>
   </PropertyGroup>
 </Project>

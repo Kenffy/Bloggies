@@ -116,6 +116,18 @@ namespace KenffySoft.Bloggy.ViewModels
             CurrentPost.Body = PostBody;
             CurrentPost.IsPublicPost = IsPublicPost;
 
+            //try
+            //{
+            //    CurrentPost.Title = BloggyEncryptDecryptServices.EncryptString(BloggyConstant.CryptoKey, PostTitle);
+            //    CurrentPost.Body = BloggyEncryptDecryptServices.EncryptString(BloggyConstant.CryptoKey, PostBody);
+            //    //var decryptedString = BloggyEncryptDecryptServices.DecryptString(BloggyConstant.CryptoKey, encryptedString);
+            //}
+            //catch(Exception ex)
+            //{
+            //    Console.WriteLine(ex.Message);
+            //    return;
+            //}
+
             if (BloggyConstant.CheckConnectivity() == false)
             {
                 var msg = "No internet connection. Please check and try again";

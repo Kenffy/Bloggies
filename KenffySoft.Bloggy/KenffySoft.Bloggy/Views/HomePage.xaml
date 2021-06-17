@@ -43,12 +43,70 @@
     </Shell.SearchHandler>
 
     <ContentPage.Content>
-        <RefreshView Command="{Binding RefreshCommand}"
+        <StackLayout>
+
+
+            <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
+                <StackLayout x:Name="CategoryList" Margin="10,5,10,2"
+                            BindableLayout.ItemsSource="{Binding Categories}"
+                            Orientation="Horizontal"
+                            BindableLayout.ItemTemplateSelector="{Binding SelectedFilter}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <StackLayout Orientation="Horizontal">
+                                <Button CornerRadius="5" Margin="2" Padding="5,0,5,0"
+                                    Text="{Binding Name}" FontSize="12"
+                                    VerticalOptions="CenterAndExpand"
+                                    HeightRequest="30"
+                                    BackgroundColor="#fff"
+                                    TextColor="{StaticResource Accent}"
+                                        Command="{Binding BindingContext.FilterCommand, Source={x:Reference CategoryList}}"
+                                                                CommandParameter="{Binding .}"/>
+
+                            </StackLayout>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </StackLayout>
+            </ScrollView>
+
+                <!--<CollectionView x:Name="CategoryList" 
+                        ItemsSource="{Binding Categories}"
+                        SelectedItem="{Binding SelectedCategory, Mode=TwoWay}" 
+                        HorizontalOptions="Center"
+                        SelectionMode="Single"
+                                Grid.Row="0">
+
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout Orientation="Horizontal" Span="1"/>
+                    </CollectionView.ItemsLayout>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Button CornerRadius="5" Margin="5" Padding="5"
+                                    Text="{Binding Name}" FontSize="12"
+                                    BackgroundColor="#fff"
+                                    TextColor="{StaticResource Accent}"/>
+
+                                --><!--<frame padding="0" widthrequest="100"
+                                   cornerradius="5" margin="3">
+                                <label text="{binding name}"
+                                       verticaloptions="centerandexpand"
+                                       horizontaloptions="center"
+                                       fontattributes="bold"
+                                       padding="5"
+                                       textcolor="{staticresource accent}"/>
+                            </Frame>--><!--
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+
+                </CollectionView>-->
+
+                <RefreshView Command="{Binding RefreshCommand}"
                      IsRefreshing="{Binding IsBusy, Mode=OneWay}"
                      RefreshColor="{StaticResource TabIconSelected}"
-                         Grid.Row="0">
+                         Grid.Row="1">
 
-            <CollectionView Margin="10,10,10,0"
+                    <CollectionView Margin="10,0,10,0"
                         x:Name="PostList" 
                         ItemsSource="{Binding PostCollection}"
                         SelectedItem="{Binding SelectedPost, Mode=TwoWay}"
@@ -59,103 +117,105 @@
                         RemainingItemsThreshold="0"
                         RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
 
-                <CollectionView.ItemsLayout>
-                    <GridItemsLayout Orientation="Vertical" Span="1"/>
-                </CollectionView.ItemsLayout>
+                        <CollectionView.ItemsLayout>
+                            <GridItemsLayout Orientation="Vertical" Span="1"/>
+                        </CollectionView.ItemsLayout>
 
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <StackLayout Margin="0,6">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <StackLayout Margin="0,6">
 
-                            <Frame Padding="0" CornerRadius="5">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="200"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-                                    <Frame Grid.Row="0"
+                                    <Frame Padding="0" CornerRadius="5">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="200"/>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <Frame Grid.Row="0"
                                            Padding="0" VerticalOptions="CenterAndExpand">
-                                        <ff:CachedImage Source="{Binding PostImage}" HeightRequest="300" Aspect="AspectFill"/>
-                                    </Frame>
-                                    <StackLayout Grid.Row="1">
-                                        <StackLayout Margin="15,10,15,0" Spacing="5">
-                                            <Label Text="{Binding Title}" 
+                                                <ff:CachedImage Source="{Binding PostImage}" HeightRequest="300" Aspect="AspectFill"/>
+                                            </Frame>
+                                            <StackLayout Grid.Row="1">
+                                                <StackLayout Margin="15,10,15,0" Spacing="5">
+                                                    <Label Text="{Binding Title}" 
                                                    FontAttributes="Bold" 
                                                    TextColor="{StaticResource TextPrimary}"
                                                    FontSize="18" MaxLines="3"
                                                    LineBreakMode="TailTruncation"/>
-                                            <Label Text="{Binding Body}" 
+                                                    <Label Text="{Binding Body}" 
                                                MaxLines="2"
                                                FontSize="16"
                                                LineBreakMode="TailTruncation"
                                                TextColor="{StaticResource TextPrimary}"/>
-                                        </StackLayout>
+                                                </StackLayout>
 
-                                    </StackLayout>
-                                    <StackLayout Grid.Row="2">
-                                        <StackLayout Margin="10">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
+                                            </StackLayout>
+                                            <StackLayout Grid.Row="2">
+                                                <StackLayout Margin="10">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
 
-                                                <StackLayout Grid.Column="0">
-                                                    <StackLayout Orientation="Horizontal"
+                                                        <StackLayout Grid.Column="0">
+                                                            <StackLayout Orientation="Horizontal"
                                                                  VerticalOptions="CenterAndExpand"
                                                                  HorizontalOptions="StartAndExpand"
                                                                  Spacing="0">
-                                                        <xct:AvatarView Text="{Binding Avatar}"  
+                                                                <xct:AvatarView Text="{Binding Avatar}"  
                                                                     Source="{Binding ProfileImage}"  
                                                                     Size="40" Color="{Binding AvatarColor}" Margin="5"/>
 
-                                                        <StackLayout Spacing="0" VerticalOptions="CenterAndExpand">
-                                                            <Label x:Name="lbBloggyName" Text="{Binding BloggyName}"
+                                                                <StackLayout Spacing="0" VerticalOptions="CenterAndExpand">
+                                                                    <Label x:Name="lbBloggyName" Text="{Binding BloggyName}"
                                                                    VerticalOptions="CenterAndExpand"
                                                         FontSize="Small" FontAttributes="Bold"
                                                            TextColor="{StaticResource TextPrimary}"/>
-                                                            <Label x:Name="lbPostedAt" FontSize="12"
+                                                                    <Label x:Name="lbPostedAt" FontSize="12"
                                                                    VerticalOptions="CenterAndExpand"
                                                            Text="{Binding PostedAt}"/>
+                                                                </StackLayout>
+                                                            </StackLayout>
+
                                                         </StackLayout>
-                                                    </StackLayout>
-
-                                                </StackLayout>
-                                                <StackLayout Grid.Column="1">
-                                                    <Grid HorizontalOptions="EndAndExpand"
+                                                        <StackLayout Grid.Column="1">
+                                                            <Grid HorizontalOptions="EndAndExpand"
                                                           VerticalOptions="CenterAndExpand">
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="Auto"/>
-                                                            <ColumnDefinition Width="Auto"/>
-                                                            <ColumnDefinition Width="Auto"/>
-                                                            <ColumnDefinition Width="Auto"/>
-                                                        </Grid.ColumnDefinitions>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="Auto"/>
+                                                                    <ColumnDefinition Width="Auto"/>
+                                                                    <ColumnDefinition Width="Auto"/>
+                                                                    <ColumnDefinition Width="Auto"/>
+                                                                </Grid.ColumnDefinitions>
 
-                                                        <Image Source="{Binding LikeImage}" VerticalOptions="CenterAndExpand"
+                                                                <Image Source="{Binding LikeImage}" VerticalOptions="CenterAndExpand"
                                                                        HeightRequest="20" Aspect="AspectFit" Grid.Column="0"/>
-                                                        <Label Text="{Binding NumLikes}" Grid.Column="1" 
+                                                                <Label Text="{Binding NumLikes}" Grid.Column="1" 
                                                            VerticalOptions="CenterAndExpand"
                                                            TextColor="{StaticResource TextPrimary}"/>
-                                                        <Image Source="{Binding CommentImage}" VerticalOptions="CenterAndExpand" Margin="15,0,0,0"
+                                                                <Image Source="{Binding CommentImage}" VerticalOptions="CenterAndExpand" Margin="15,0,0,0"
                                                                        HeightRequest="20" Aspect="AspectFit" Grid.Column="2"/>
-                                                        <Label Text="{Binding NumComments}" Grid.Column="3" 
+                                                                <Label Text="{Binding NumComments}" Grid.Column="3" 
                                                            VerticalOptions="CenterAndExpand"
                                                            TextColor="{StaticResource TextPrimary}"/>
+                                                            </Grid>
+                                                        </StackLayout>
                                                     </Grid>
                                                 </StackLayout>
-                                            </Grid>
-                                        </StackLayout>
 
-                                    </StackLayout>
-                                </Grid>
-                            </Frame>
-                        </StackLayout>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
+                                            </StackLayout>
+                                        </Grid>
+                                    </Frame>
+                                </StackLayout>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
 
-            </CollectionView>
-        </RefreshView>
+                    </CollectionView>
+                </RefreshView>
+
+        </StackLayout>
 
     </ContentPage.Content>
 </ContentPage>

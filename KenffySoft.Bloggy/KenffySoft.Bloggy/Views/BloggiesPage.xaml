@@ -90,7 +90,7 @@
                             <StackLayout>
                                 <Frame CornerRadius="10" 
                             HasShadow="{OnPlatform iOS='False', Android='True'}" 
-                            Padding="0" Margin="5"
+                            Padding="0" Margin="5" HeightRequest="260"
                             BorderColor="{StaticResource TabIconSelected}">
                                     <Grid>
                                         <Grid.RowDefinitions>
@@ -129,8 +129,10 @@
                                     TextColor="{StaticResource TextPrimary}" 
                                     HorizontalTextAlignment="Center" 
                                     VerticalOptions="CenterAndExpand"
+                                    MaxLines="2"
+                                    LineBreakMode="TailTruncation"
                                     FontSize="{OnPlatform iOS='Small', Android='Small'}" 
-                                    Margin="0"/>
+                                    Padding="10,0,10,0"/>
 
                                         <StackLayout Orientation="Horizontal" 
                                             Grid.Row="3" Spacing="5"
@@ -144,12 +146,28 @@
                                         FontSize="{OnPlatform iOS='Micro', Android='Micro'}"/>
                                         </StackLayout>
 
-                                        <Frame BorderColor="{StaticResource TabIconSelected}" 
+                                        <Button BorderColor="{StaticResource TabIconSelected}" 
+                                        CornerRadius="{OnPlatform iOS='20', Android='30'}"
+                                        Grid.Row="4" Padding="0"
+                                        Margin="{OnPlatform iOS='15,0,15,0', Android='20,0,20,0'}"
+                                        BackgroundColor="#fff"
+                                        TextColor="{StaticResource Accent}"
+                                        Text="{Binding FollowStatus}"
+                                        BorderWidth="2"
+                                        FontSize="12"
+                                        HeightRequest="30"
+                                        IsEnabled="{Binding IsFollowActive}"
+                                        Command="{Binding BindingContext.FollowCommand, Source={x:Reference Bloggies}}"
+                                                                CommandParameter="{Binding .}"/>
+
+                                        <!--<Frame BorderColor="{StaticResource TabIconSelected}" 
                                         CornerRadius="{OnPlatform iOS='20', Android='30'}"
                                         HasShadow="{OnPlatform iOS='False', Android='True'}"
                                         Grid.Row="4" Padding="5"
                                         Margin="{OnPlatform iOS='15', Android='20'}"
-                                        VerticalOptions="CenterAndExpand">
+                                        VerticalOptions="CenterAndExpand"
+                                               xct:TouchEffect.State="Pressed"
+                                               xct:TouchEffect.PressedBackgroundColor="LightGray">
 
                                             <Label Text="Follow" x:Name="lbFollow"
                                             FontSize="{OnPlatform iOS='15', Android='Medium'}" 
@@ -162,7 +180,7 @@
                                                 <TapGestureRecognizer Command="{Binding BindingContext.FollowCommand, Source={x:Reference Bloggies}}"
                                                                       CommandParameter="{Binding .}"/>
                                             </Frame.GestureRecognizers>
-                                        </Frame>
+                                        </Frame>-->
                                     </Grid>
                                 </Frame>
                             </StackLayout>

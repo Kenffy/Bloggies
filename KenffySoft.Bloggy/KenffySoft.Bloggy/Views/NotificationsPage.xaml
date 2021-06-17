@@ -7,8 +7,43 @@
     <ContentPage.BindingContext>
         <vm:NotificationsViewModel />
     </ContentPage.BindingContext>
-    
-    <ScrollView>
+
+    <StackLayout>
+        <ListView x:Name="Notifications" Grid.Row="1"
+                  HasUnevenRows="True"
+                  ItemsSource="{Binding NotificationsCollection}"
+                  Margin="0">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid BackgroundColor="#ecf0f1"
+                                ColumnDefinitions="Auto, *" ColumnSpacing="10">
+
+                            <views:AvatarView Grid.Column="0"
+                                    Text="{Binding SenderAvatar}"  Source="{Binding SenderProfile}"  
+                                    Size="50" Color="{Binding SenderAvatarColor}" TextColor="White" 
+                                    VerticalOptions="StartAndExpand" Margin="8"/>
+
+                            <StackLayout Margin="2" Grid.Column="1" VerticalOptions="Center">
+                                <Label Text="{Binding Message}" FontSize="Medium" 
+                                           FontAttributes="Bold"
+                                           VerticalOptions="Center"/>
+
+                                <Label Text="{Binding NotifyAt}" FontSize="Subtitle" 
+                                               TextColor="DarkGray" FontAttributes="Italic"
+                                               MaxLines="1"
+                                               LineBreakMode="TailTruncation"
+                                               VerticalOptions="Center"/>
+                            </StackLayout>
+                        </Grid>
+
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+
+    <!--<ScrollView>
         <StackLayout x:Name="Notifications"
                     BindableLayout.ItemsSource="{Binding NotificationsCollection}"
                     Orientation="Vertical">
@@ -28,7 +63,7 @@
                                                             FontSize="Medium" FontAttributes="Bold">
                             </Label>
 
-                            <!--<Label Text="{Binding Message}" FontSize="Body" HorizontalOptions="StartAndExpand"/>-->
+                            <Label Text="{Binding Message}" FontSize="Body" HorizontalOptions="StartAndExpand"/>
                             <Label Text="{Binding NotifyAt}" FontSize="Small" TextColor="DarkGray"/>
                         </StackLayout>
 
@@ -36,5 +71,5 @@
                 </DataTemplate>
             </BindableLayout.ItemTemplate>
         </StackLayout>
-    </ScrollView>
+    </ScrollView>-->
 </ContentPage>

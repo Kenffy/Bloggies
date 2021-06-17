@@ -4,6 +4,7 @@ using KenffySoft.Bloggy.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -47,7 +48,12 @@ namespace KenffySoft.Bloggy.ViewModels
         public ObservableCollection<Models.Bloggy> Bloggies
         {
             get => bloggies;
-            set => SetProperty(ref bloggies, value);
+            set
+            {
+                bloggies = value;
+                OnPropertyChanged("Bloggies");
+            }
+            //set => SetProperty(ref bloggies, value);
         }
 
         public double CollectionViewOpacity
@@ -95,10 +101,17 @@ namespace KenffySoft.Bloggy.ViewModels
             try
             {
                 var bloggy = obj as Models.Bloggy;
+
+                if (bloggy.IsFollowActive == false)
+                    return;
+                bloggy.FollowStatus = BloggyConstant.FollowerStatus;
+                bloggy.IsFollowActive = false;
+                Bloggies[Bloggies.IndexOf(bloggy)] = bloggy;
                 await BloggyServices.FollowBloggyAsync(bloggy.Id);
+                
 
                 // TO DO: to be uptimized
-                LoadAllBloggies();
+                //LoadAllBloggies();
             }
             catch (Exception ex)
             {

@@ -17,8 +17,11 @@ namespace KenffySoft.Bloggy.ViewModels
         private int pageNumber = 0;
         private readonly int pageSize = 10;
         private readonly string MemberId;
+        private string loadMoreStatus;
+        private bool isloadMoreActive;
+        private bool isloadMoreVisible;
         private PostDetail selectedPost;
-        private ObservableCollection<PostDetail> Posts;
+        private ObservableCollection<PostDetail> posts;
         private ObservableCollection<PostDetail> postList;
         public Command RefreshCommand { get; }
         public Command AddCommand { get; }
@@ -30,7 +33,7 @@ namespace KenffySoft.Bloggy.ViewModels
         public PostViewModel(string Id = null)
         {
             selectedPost = new PostDetail();
-            Posts = new ObservableCollection<PostDetail>();
+            posts = new ObservableCollection<PostDetail>();
             postList = new ObservableCollection<PostDetail>();
             RefreshCommand = new Command(OnRefresh);
             AddCommand = new Command(OnCreatePost);
@@ -39,7 +42,16 @@ namespace KenffySoft.Bloggy.ViewModels
             SelectedCommand = new Command<object>(OnSelected);
             LoadMoreCommand = new Command(LoadMorePosts);
             MemberId = Id;
+            loadMoreStatus = "";
+            isloadMoreActive = false;
+            isloadMoreVisible = false;
             LoadPostAsync();
+        }
+
+        public ObservableCollection<PostDetail> Posts
+        {
+            get => posts;
+            set => SetProperty(ref posts, value);
         }
 
         public ObservableCollection<PostDetail> PostList
@@ -52,6 +64,24 @@ namespace KenffySoft.Bloggy.ViewModels
         {
             get => selectedPost;
             set => SetProperty(ref selectedPost, value);
+        }
+
+        public string LoadMoreStatus
+        {
+            get => loadMoreStatus;
+            set => SetProperty(ref loadMoreStatus, value);
+        }
+
+        public bool IsLoadMoreActive
+        {
+            get => isloadMoreActive;
+            set => SetProperty(ref isloadMoreActive, value);
+        }
+
+        public bool IsLoadMoreVisible
+        {
+            get => isloadMoreVisible;
+            set => SetProperty(ref isloadMoreVisible, value);
         }
 
         private async void OnSelected(object obj)
@@ -145,6 +175,25 @@ namespace KenffySoft.Bloggy.ViewModels
                 {
                     PostList.Add(post);
                 }
+
+                if(Posts.Count > PostList.Count && PostList.Count >= 10)
+                {
+                    LoadMoreStatus = "Load more posts...";
+                    IsLoadMoreActive = true;
+                    IsLoadMoreVisible = true;
+                }
+                else if(Posts.Count == PostList.Count && PostList.Count >= 10)
+                {
+                    LoadMoreStatus = "No more posts";
+                    IsLoadMoreActive = false;
+                    IsLoadMoreVisible = true;
+                }
+                else
+                {
+                    LoadMoreStatus = "";
+                    IsLoadMoreActive = false;
+                    IsLoadMoreVisible = false;
+                }
             }
         }
 
@@ -169,6 +218,25 @@ namespace KenffySoft.Bloggy.ViewModels
                 foreach (var post in tempPosts)
                 {
                     PostList.Add(post);
+                }
+
+                if (Posts.Count > PostList.Count && PostList.Count >= 10)
+                {
+                    LoadMoreStatus = "Load more posts...";
+                    IsLoadMoreActive = true;
+                    IsLoadMoreVisible = true;
+                }
+                else if (Posts.Count == PostList.Count && PostList.Count >= 10)
+                {
+                    LoadMoreStatus = "No more posts";
+                    IsLoadMoreActive = false;
+                    IsLoadMoreVisible = true;
+                }
+                else
+                {
+                    LoadMoreStatus = "";
+                    IsLoadMoreActive = false;
+                    IsLoadMoreVisible = false;
                 }
 
             }

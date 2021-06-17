@@ -33,6 +33,7 @@
                         IsRefreshing="{Binding IsBusy, Mode=OneWay}"
                         SelectedItem="{Binding SelectedPost, Mode=TwoWay}"
                         Margin="0"
+                        RefreshControlColor="{StaticResource Accent}"
                         AbsoluteLayout.LayoutFlags="All"
                         AbsoluteLayout.LayoutBounds="0,0,1,1">
                 <ListView.Behaviors>
@@ -153,8 +154,12 @@
                     <Frame HorizontalOptions="FillAndExpand"
                            BackgroundColor="#FAF8FA"
                            VerticalOptions="EndAndExpand"
-                           Margin="5">
-                        <Label Text="Load more posts..." FontSize="Medium"
+                           Margin="5"
+                           IsVisible="{Binding IsLoadMoreVisible}"
+                           IsEnabled="{Binding IsLoadMoreActive}">
+                        <Label Text="{Binding LoadMoreStatus}" 
+                               FontSize="Medium"
+                               TextColor="{StaticResource Accent}"
                                HorizontalOptions="Center" VerticalOptions="EndAndExpand"/>
 
                         <Frame.GestureRecognizers>

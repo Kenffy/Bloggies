@@ -20,6 +20,7 @@ namespace KenffySoft.Bloggy.ViewModels
         private bool isCancelSearchEnable;
 
         private PostDetail selectedPost;
+        private ObservableCollection<Category> categories;
         private ObservableCollection<PostDetail> Posts;
         private ObservableCollection<PostDetail> postCollection;
 
@@ -46,14 +47,19 @@ namespace KenffySoft.Bloggy.ViewModels
             set => SetProperty(ref postCollection, value);
         }
 
+        public ObservableCollection<Category> Categories
+        {
+            get => categories;
+            set => SetProperty(ref categories, value);
+        }
+
         public Command RefreshCommand { get; }
         public Command LoadMoreCommand { get; }
         public Command NotificationCommand { get; }
-
         public Command<object> SelectedCommand { get; }
-
         public Command OnSearchCommand { get; }
         public Command OnCancelSearchCommand { get; }
+        public Command FilterCommand { get; }
         public HomeViewModel()
         {
             isSearchEnable = false;
@@ -61,13 +67,56 @@ namespace KenffySoft.Bloggy.ViewModels
             selectedPost = new PostDetail();
             Posts = new ObservableCollection<PostDetail>();
             postCollection = new ObservableCollection<PostDetail>();
+            categories = new ObservableCollection<Category>();
             RefreshCommand = new Command(Refresh);
             LoadMoreCommand = new Command(LoadMore);
             SelectedCommand = new Command<object>(OnSelected);
             NotificationCommand = new Command(OnNotifications);
             OnSearchCommand = new Command(OnSearch);
+            FilterCommand = new Command(OnFilter);
             OnCancelSearchCommand = new Command(OnCancelSearch);
             Init();
+        }
+
+        private async void OnFilter(object obj)
+        {
+            if (BloggyConstant.CheckConnectivity() == false)
+            {
+                string msg = "No internet connection. Please check and try again";
+                await Application.Current.MainPage.DisplayAlert("Connection Error", msg, "Cancel");
+                return;
+            }
+
+            try
+            {
+                var category = obj as Category;
+
+                if (category == null)
+                    return;
+
+                if(category.Name == "More...")
+                {
+                    string msg = "Filter will come soon: " + category.Name + " selected.";
+                    await Application.Current.MainPage.DisplayAlert("Filter Information", msg, "Cancel");
+                }
+                else if (category.Name == "All")
+                {
+                    string msg = "Filter will come soon: " + category.Name + " selected.";
+                    await Application.Current.MainPage.DisplayAlert("Filter Information", msg, "Cancel");
+                }
+                else
+                {
+                    string msg = "Filter will come soon: " + category.Name + " selected.";
+                    await Application.Current.MainPage.DisplayAlert("Filter Information", msg, "Cancel");
+                }
+                
+
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Oops!!!", "Something went wrong!", "Ok");
+                Console.WriteLine(ex.Message);
+            }
         }
 
         private void OnCancelSearch(object obj)
@@ -92,6 +141,7 @@ namespace KenffySoft.Bloggy.ViewModels
             IsBusy = true;
             pageNumber = 0;
             Posts.Clear();
+            Categories.Clear();
             PostCollection.Clear();
             await LoadPostAsync();
             IsBusy = false;
@@ -127,6 +177,9 @@ namespace KenffySoft.Bloggy.ViewModels
             CheckInternetConnection();
             try
             {
+                var tempCategories = BloggyConstant.GetCategories();
+                Categories = new ObservableCollection<Category>(tempCategories.OrderBy(c => c.Name));
+
                 Posts = await BloggyServices.GetAllPostsAsync();
 
                 if (Posts.Count == 0)
@@ -154,6 +207,7 @@ namespace KenffySoft.Bloggy.ViewModels
             {
                 pageNumber = 0;
                 Posts.Clear();
+                Categories.Clear();
                 PostCollection.Clear();
                 await LoadPostAsync();
             }

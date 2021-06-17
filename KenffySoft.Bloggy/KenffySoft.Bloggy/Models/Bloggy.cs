@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KenffySoft.Bloggy.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -16,5 +17,13 @@ namespace KenffySoft.Bloggy.Models
         public string ProfileImageName { get; set; }
         public string Followers { get; set; }
         public int NumFollowers { get; set; }
+        public string FollowStatus { get; set; }
+        public bool IsFollowActive { get; set; }
+
+        public Bloggy()
+        {
+            FollowStatus = BloggyConstant.FollowStatus;
+            IsFollowActive = true;
+        }
     }
 }

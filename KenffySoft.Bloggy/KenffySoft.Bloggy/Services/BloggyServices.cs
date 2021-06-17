@@ -660,8 +660,6 @@ namespace KenffySoft.Bloggy.Services
             var client = new FirebaseClient(BloggyConstant.ConnectionString,
                 new FirebaseOptions { AuthTokenAsyncFactory = () => Task.FromResult(token.FirebaseToken) });
 
-            var postHelper = new PostHelper();
-
             var MemberId = string.Empty;
             if (string.IsNullOrEmpty(memberId))
             {
@@ -697,7 +695,7 @@ namespace KenffySoft.Bloggy.Services
 
             if(posts.Count == 0)
             {
-                return null;
+                return new ObservableCollection<PostDetail>(); // null;
             }
 
             var members = (await client

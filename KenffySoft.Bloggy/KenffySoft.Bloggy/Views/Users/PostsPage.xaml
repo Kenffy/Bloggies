@@ -110,6 +110,23 @@
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
+                <ListView.Footer>
+                    <Frame HorizontalOptions="FillAndExpand"
+                           BackgroundColor="#FAF8FA"
+                           VerticalOptions="EndAndExpand"
+                           Margin="5"
+                           IsVisible="{Binding IsLoadMoreVisible}"
+                           IsEnabled="{Binding IsLoadMoreActive}">
+                        <Label Text="{Binding LoadMoreStatus}" 
+                               FontSize="Medium"
+                               TextColor="{StaticResource Accent}"
+                               HorizontalOptions="Center" VerticalOptions="EndAndExpand"/>
+
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding LoadMoreCommand}"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+                </ListView.Footer>
 
             </ListView>
 
