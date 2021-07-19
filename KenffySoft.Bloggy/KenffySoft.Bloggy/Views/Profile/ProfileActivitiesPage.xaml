@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:helpers="clr-namespace:KenffySoft.Bloggy.Helpers"
+             xmlns:cviews="clr-namespace:KenffySoft.Bloggy.Views.ContentViews"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+             x:Class="KenffySoft.Bloggy.Views.Profile.ProfileActivitiesPage">
+
+    <Shell.TitleView>
+        <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+            <Label
+                Margin="{OnPlatform iOS='0,12,0,4',
+                                    Android='0,16,0,8'}"
+                FontSize="18"
+                FontAttributes="Bold"
+                Text="Settings"
+                TextColor="{StaticResource Accent}" />
+            <BoxView
+                Margin="{OnPlatform Android='0,0,16,0'}"
+                BackgroundColor="#DDD"
+                HeightRequest="1"
+                HorizontalOptions="FillAndExpand" />
+        </StackLayout>
+    </Shell.TitleView>
+
+    <xct:TabView>
+        <xct:TabViewItem
+            ControlTemplate="{StaticResource TabItemTemplate}"
+            Style="{StaticResource TabViewItemStyle}"
+            Text="Posts">
+            <cviews:PostView />
+        </xct:TabViewItem>
+        <xct:TabViewItem
+            ControlTemplate="{StaticResource TabItemTemplate}"
+            Style="{StaticResource TabViewItemStyle}"
+            Text="Followers">
+            <cviews:FollowersView />
+        </xct:TabViewItem>
+        <xct:TabViewItem
+            ControlTemplate="{StaticResource TabItemTemplate}"
+            Style="{StaticResource TabViewItemStyle}"
+            Text="Following">
+            <cviews:FollowingView />
+        </xct:TabViewItem>
+    </xct:TabView>
+
+</ContentPage>

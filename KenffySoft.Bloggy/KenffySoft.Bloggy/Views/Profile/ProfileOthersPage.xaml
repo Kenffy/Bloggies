@@ -1,0 +1,248 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit" xmlns:vm="clr-namespace:KenffySoft.Bloggy.ViewModels"
+             x:Class="KenffySoft.Bloggy.Views.Profile.ProfileOthersPage"
+             BackgroundColor="{StaticResource Background}"
+             Title="Settings"
+             Shell.NavBarHasShadow="True">
+
+    <ContentPage.BindingContext>
+        <vm:ProfileOthersViewModel />
+    </ContentPage.BindingContext>
+
+    <ScrollView>
+        <StackLayout Padding="8">
+
+            <Frame
+                Padding="0"
+                CornerRadius="6"
+                HasShadow="False">
+                <Grid RowDefinitions="Auto,Auto,Auto">
+
+                    <Grid BackgroundColor="{StaticResource CardHeaderBackground}">
+                        <StackLayout
+                            Padding="16,10"
+                            HorizontalOptions="Center"
+                            Orientation="Horizontal"
+                            Spacing="2"
+                            HeightRequest="20">
+                        </StackLayout>
+                    </Grid>
+
+                    <Grid Padding="8"
+                          Grid.Row="1">
+                        <StackLayout Margin="5,0,5,10">
+                            <Label Text="Bloggies"
+                                   HorizontalOptions="Center"
+                                   TextColor="{StaticResource Accent}"
+                                   FontSize="Large"
+                                   FontAttributes="Bold"/>
+
+                            <Image Source="network.png"
+                                   WidthRequest="120"
+                                   HeightRequest="120"/>
+                            <Label 
+                                Margin="10"
+                                FontSize="Body"
+                                HorizontalTextAlignment="Center"
+                                HorizontalOptions="Center"
+                                Text="Connect with friends and the world around you on Bloggies."/>
+
+                            <Label 
+                                Margin="5"
+                                FontSize="Body"
+                                TextColor="{StaticResource Accent}"
+                                HorizontalTextAlignment="Center"
+                                HorizontalOptions="Center"
+                                Text="Version 1.0"/>
+                        </StackLayout>
+                    </Grid>
+                </Grid>
+            </Frame>
+
+            <Frame
+                Padding="0"
+                CornerRadius="6"
+                HasShadow="False">
+                <Grid RowDefinitions="Auto,Auto">
+
+                    <Grid BackgroundColor="{StaticResource CardHeaderBackground}">
+                        <StackLayout
+                            Padding="16,10"
+                            HorizontalOptions="Start"
+                            Orientation="Horizontal"
+                            Spacing="2">
+
+                            <Label
+                                FontSize="Medium"
+                                Text="WEBSITE"
+                                TextColor="{StaticResource TabIconSelected}" />
+                        </StackLayout>
+                    </Grid>
+
+                    <Grid Padding="8"
+                          Grid.Row="1">
+
+                        <Grid RowDefinitions="Auto,Auto">
+                            <StackLayout 
+                                Grid.Row="0"
+                                Padding="5"
+                                Orientation="Horizontal">
+                                <Label 
+                                    VerticalOptions="CenterAndExpand"
+                                    HorizontalOptions="StartAndExpand"
+                                    Text="www.bloggies.com" 
+                                    TextColor="Blue"
+                                    TextDecorations="Underline"
+                                    FontSize="Medium"
+                                    xct:TouchEffect.Command="{Binding WebsiteCommand}"/>
+                            </StackLayout>
+
+                        </Grid>
+
+                    </Grid>
+                </Grid>
+            </Frame>
+
+            <Frame
+                Padding="0"
+                CornerRadius="6"
+                HasShadow="False">
+                <Grid RowDefinitions="Auto,Auto">
+
+                    <Grid BackgroundColor="{StaticResource CardHeaderBackground}">
+                        <StackLayout
+                            Padding="16,10"
+                            HorizontalOptions="Start"
+                            Orientation="Horizontal"
+                            Spacing="2">
+
+                            <Label
+                                FontSize="Medium"
+                                Text="THEME"
+                                TextColor="{StaticResource TabIconSelected}" />
+                        </StackLayout>
+                    </Grid>
+
+                    <Grid Padding="8"
+                          Grid.Row="1">
+
+                        <Grid RowDefinitions="Auto,Auto">
+                            <StackLayout 
+                                Grid.Row="0"
+                                Padding="5"
+                                Orientation="Horizontal">
+                                <Label 
+                                    VerticalOptions="CenterAndExpand"
+                                    HorizontalOptions="StartAndExpand"
+                                    Text="Dark" 
+                                    FontSize="Medium"/>
+                                <Switch 
+                                    VerticalOptions="CenterAndExpand"
+                                    HorizontalOptions="EndAndExpand"
+                                    IsToggled="{Binding IsDarkThemeActive}"/>
+                            </StackLayout>
+
+                        </Grid>
+
+                    </Grid>
+                </Grid>
+            </Frame>
+
+            <Frame
+                Padding="0"
+                CornerRadius="6"
+                HasShadow="False">
+                <Grid RowDefinitions="Auto,Auto">
+
+                    <Grid BackgroundColor="{StaticResource CardHeaderBackground}">
+                        <StackLayout
+                            Padding="16,10"
+                            HorizontalOptions="Start"
+                            Orientation="Horizontal"
+                            Spacing="2">
+
+                            <Label
+                                FontSize="Medium"
+                                Text="SERVICES"
+                                TextColor="{StaticResource TabIconSelected}" />
+                        </StackLayout>
+                    </Grid>
+
+                    <Grid Padding="8"
+                          Grid.Row="1">
+
+                        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
+                            <StackLayout 
+                                Grid.Row="0"
+                                Padding="5"
+                                xct:TouchEffect.NormalBackgroundColor="Transparent"
+                                xct:TouchEffect.PressedBackgroundColor="#ecf0f1">
+                                <Label Text="Privacy Policy" 
+                                       FontSize="Medium"
+                                       xct:TouchEffect.Command="{Binding PrivacyPolicyCommand}"/>
+                            </StackLayout>
+
+                            <BoxView
+                                Grid.Row="1"
+                                BackgroundColor="{StaticResource Background}"
+                                HeightRequest="1"
+                                HorizontalOptions="FillAndExpand"
+                                VerticalOptions="Center" />
+
+                            <StackLayout 
+                                Grid.Row="2"
+                                Padding="5"
+                                xct:TouchEffect.NormalBackgroundColor="Transparent"
+                                xct:TouchEffect.PressedBackgroundColor="#ecf0f1">
+                                <Label Text="Terms of service" 
+                                       FontSize="Medium"
+                                       xct:TouchEffect.Command="{Binding TermsOfUseCommand}"/>
+                            </StackLayout>
+
+                            <BoxView
+                                Grid.Row="3"
+                                BackgroundColor="{StaticResource Background}"
+                                HeightRequest="1"
+                                HorizontalOptions="FillAndExpand"
+                                VerticalOptions="Center" />
+
+                            <StackLayout 
+                                Grid.Row="4"
+                                Padding="5"
+                                xct:TouchEffect.NormalBackgroundColor="Transparent"
+                                xct:TouchEffect.PressedBackgroundColor="#ecf0f1">
+                                <Label Text="Rate the Application" 
+                                       FontSize="Medium"
+                                       xct:TouchEffect.Command="{Binding RateAppCommand}"/>
+                            </StackLayout>
+                        </Grid>
+
+                    </Grid>
+                </Grid>
+            </Frame>
+
+            <Frame
+                Padding="0"
+                CornerRadius="6"
+                HasShadow="False"
+                VerticalOptions="EndAndExpand">
+
+                <Grid BackgroundColor="{StaticResource CardHeaderBackground}">
+                    <StackLayout
+                            Padding="16,10"
+                            HorizontalOptions="Center"
+                            Orientation="Horizontal"
+                            Spacing="2">
+
+                        <Label
+                            HorizontalTextAlignment="Center"
+                                FontSize="Small"
+                                Text="Copyright 2021 Bloggies. All rights reserved." />
+                    </StackLayout>
+                </Grid>
+            </Frame>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

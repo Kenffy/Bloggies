@@ -17,26 +17,27 @@
             <xct:TabSelectionChangedEventArgs x:Key="SelectionChangedEventConverter"/>
 
             <DataTemplate x:Key="BloggySearchTemplate">
-                <StackLayout Orientation="Horizontal" Margin="0,5">
 
-                    <xct:AvatarView Text="{Binding Avatar}"  Source="{Binding ProfileImage}"  
-                                                                      Size="50" Color="{Binding AvatarColor}" 
-                                                                      VerticalOptions="StartAndExpand" Margin="8"/>
+                <Grid ColumnDefinitions="Auto, *" ColumnSpacing="10">
 
-                    <StackLayout Margin="5" Spacing="0">
-                        <Label Text="{Binding Name}" VerticalOptions="StartAndExpand"
-                                                            FontSize="Medium" FontAttributes="Bold">
-                        </Label>
+                    <xct:AvatarView Grid.Column="0"
+                                    Text="{Binding Avatar}"  Source="{Binding ProfileImage}"  
+                                    Size="50" Color="{Binding AvatarColor}" TextColor="White" 
+                                    VerticalOptions="StartAndExpand" Margin="8"/>
 
-                        <Label Text="{Binding Description}" Margin="5"
-                               VerticalOptions="StartAndExpand"
-                               MaxLines="2"
-                               LineBreakMode="TailTruncation"
-                               FontSize="Body" HorizontalOptions="StartAndExpand"/>
+                    <StackLayout Margin="2" Grid.Column="1" VerticalOptions="Center">
+                        <Label Text="{Binding Name}" FontSize="Medium" 
+                                           FontAttributes="Bold"
+                                           VerticalOptions="Center"/>
+
+                        <Label Text="{Binding Description}" FontSize="Subtitle" 
+                                               TextColor="DarkGray" FontAttributes="Italic"
+                                               MaxLines="1"
+                                               LineBreakMode="TailTruncation"
+                                               VerticalOptions="Center"/>
                     </StackLayout>
+                </Grid>
 
-
-                </StackLayout>
             </DataTemplate>
         </ResourceDictionary>
     </ContentPage.Resources>
@@ -150,7 +151,7 @@
                                         CornerRadius="{OnPlatform iOS='20', Android='30'}"
                                         Grid.Row="4" Padding="0"
                                         Margin="{OnPlatform iOS='15,0,15,0', Android='20,0,20,0'}"
-                                        BackgroundColor="#fff"
+                                        BackgroundColor="Transparent"
                                         TextColor="{StaticResource Accent}"
                                         Text="{Binding FollowStatus}"
                                         BorderWidth="2"

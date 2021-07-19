@@ -58,6 +58,11 @@ namespace KenffySoft.Bloggy.Services
             var serializedcontent = JsonConvert.SerializeObject(content);
             Preferences.Set("BloggyToken", serializedcontent);
 
+            if(auth.FirebaseToken != null)
+            {
+                App.AuthUserId = content.User.LocalId;
+            }
+
             return (auth.FirebaseToken != null);
         }
 
@@ -509,6 +514,7 @@ namespace KenffySoft.Bloggy.Services
                 Title = item.Object.Title,
                 Body = item.Object.Body,
                 IsPublicPost = item.Object.IsPublicPost,
+                VisibilityStatus = item.Object.IsPublicPost ? "world.png":"lock.png",
                 CreatedAt = item.Object.CreatedAt,
                 PostedAt = BloggyConstant.GetTimeMessage(item.Object.CreatedAt),
                 PostImage = string.IsNullOrEmpty(item.Object.PostImage) ? "defaultImage.png" : item.Object.PostImage,
@@ -547,6 +553,7 @@ namespace KenffySoft.Bloggy.Services
                       Title = item.Object.Title,
                       Body = item.Object.Body,
                       IsPublicPost = item.Object.IsPublicPost,
+                      VisibilityStatus = item.Object.IsPublicPost ? "world.png" : "lock.png",
                       CreatedAt = item.Object.CreatedAt,
                       PostedAt = BloggyConstant.GetTimeMessage(item.Object.CreatedAt),
                       PostImage = string.IsNullOrEmpty(item.Object.PostImage) ? "defaultImage.png" : item.Object.PostImage,
@@ -610,6 +617,7 @@ namespace KenffySoft.Bloggy.Services
                       Title = item.Object.Title,
                       Body = item.Object.Body,
                       IsPublicPost = item.Object.IsPublicPost,
+                      VisibilityStatus = item.Object.IsPublicPost ? "world.png" : "lock.png",
                       CreatedAt = item.Object.CreatedAt,
                       PostedAt = BloggyConstant.GetTimeMessage(item.Object.CreatedAt),
                       PostImage = string.IsNullOrEmpty(item.Object.PostImage) ? "defaultImage.png" : item.Object.PostImage,
@@ -681,6 +689,7 @@ namespace KenffySoft.Bloggy.Services
                       Title = item.Object.Title,
                       Body = item.Object.Body,
                       IsPublicPost = item.Object.IsPublicPost,
+                      VisibilityStatus = item.Object.IsPublicPost ? "world.png" : "lock.png",
                       CreatedAt = item.Object.CreatedAt,
                       PostedAt = BloggyConstant.GetTimeMessage(item.Object.CreatedAt),
                       PostImage = string.IsNullOrEmpty(item.Object.PostImage) ? "defaultImage.png" : item.Object.PostImage,

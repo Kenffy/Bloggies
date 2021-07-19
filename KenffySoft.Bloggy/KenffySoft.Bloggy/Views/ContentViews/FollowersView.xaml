@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:views="http://xamarin.com/schemas/2020/toolkit"
+             x:Class="KenffySoft.Bloggy.Views.ContentViews.FollowersView">
+  <ContentView.Content>
+        <StackLayout>
+            <ListView x:Name="FollowersList" Grid.Row="1"
+                  HasUnevenRows="True"
+                  ItemsSource="{Binding FollowersCollection}"
+                  Margin="0">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid ColumnDefinitions="Auto, *" ColumnSpacing="10">
+
+                                <views:AvatarView Grid.Column="0"
+                                    Text="{Binding Avatar}"  Source="{Binding ProfileImage}"  
+                                    Size="50" Color="{Binding AvatarColor}" TextColor="White" 
+                                    VerticalOptions="StartAndExpand" Margin="8"/>
+
+                                <StackLayout Margin="2" Grid.Column="1" VerticalOptions="Center">
+                                    <Label Text="{Binding Name}" FontSize="Medium" 
+                                           FontAttributes="Bold"
+                                           VerticalOptions="Center"/>
+
+                                    <Label Text="{Binding Description}" FontSize="Subtitle" 
+                                               TextColor="DarkGray" FontAttributes="Italic"
+                                               MaxLines="1"
+                                               LineBreakMode="TailTruncation"
+                                               VerticalOptions="Center"/>
+                                </StackLayout>
+                            </Grid>
+
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+  </ContentView.Content>
+</ContentView>

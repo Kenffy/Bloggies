@@ -8,7 +8,7 @@
              xmlns:control="clr-namespace:KenffySoft.Bloggy.Controls"
              x:Class="KenffySoft.Bloggy.Views.HomePage"
              Title="Bloggies"
-             BackgroundColor="#ecf0f1">
+             BackgroundColor="{StaticResource Background}">
 
     <ContentPage.BindingContext>
         <vm:HomeViewModel />
@@ -188,7 +188,8 @@
                                                                     <ColumnDefinition Width="Auto"/>
                                                                     <ColumnDefinition Width="Auto"/>
                                                                     <ColumnDefinition Width="Auto"/>
-                                                                </Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
 
                                                                 <Image Source="{Binding LikeImage}" VerticalOptions="CenterAndExpand"
                                                                        HeightRequest="20" Aspect="AspectFit" Grid.Column="0"/>
@@ -198,9 +199,12 @@
                                                                 <Image Source="{Binding CommentImage}" VerticalOptions="CenterAndExpand" Margin="15,0,0,0"
                                                                        HeightRequest="20" Aspect="AspectFit" Grid.Column="2"/>
                                                                 <Label Text="{Binding NumComments}" Grid.Column="3" 
-                                                           VerticalOptions="CenterAndExpand"
-                                                           TextColor="{StaticResource TextPrimary}"/>
-                                                            </Grid>
+                                                                       VerticalOptions="CenterAndExpand"
+                                                                       TextColor="{StaticResource TextPrimary}"/>
+                                                                <Image Source="{Binding VisibilityStatus}" VerticalOptions="CenterAndExpand" Margin="15,0,0,0"
+                                                                    HeightRequest="20" Aspect="AspectFit" Grid.Column="4"/>
+
+                                                        </Grid>
                                                         </StackLayout>
                                                     </Grid>
                                                 </StackLayout>

@@ -1,4 +1,6 @@
-﻿using KenffySoft.Bloggy.Views;
+﻿using Firebase.Auth;
+using KenffySoft.Bloggy.Views;
+using Newtonsoft.Json;
 using System;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -8,16 +10,20 @@ namespace KenffySoft.Bloggy
 {
     public partial class App : Application
     {
-
+        public static string AuthUserId = "";
         public App()
         {
             InitializeComponent();
-            if (string.IsNullOrEmpty(Preferences.Get("BloggyToken", string.Empty)))
+            var tokenStr = Preferences.Get("BloggyToken", string.Empty);
+            
+            if (string.IsNullOrEmpty(tokenStr))
             {
                 MainPage = new NavigationPage(new LoginPage());
             }
             else
             {
+                var token = JsonConvert.DeserializeObject<FirebaseAuthLink>(tokenStr);
+                AuthUserId = token.User.LocalId;
                 MainPage = new AppShell();
             }
         }

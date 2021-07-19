@@ -10,6 +10,7 @@ namespace KenffySoft.Bloggy.Models
         public string MemberId { get; set; }
         public string Title { get; set; }
         public string Body { get; set; }
+        public string VisibilityStatus { get; set; }
         public bool IsPublicPost { get; set; }
         public DateTime CreatedAt { get; set; }
         public string PostImage { get; set; }

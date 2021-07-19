@@ -12,42 +12,26 @@ namespace KenffySoft.Bloggy.ViewModels
 {
     public class AboutViewModel : BaseViewModel
     {
-        private string number = "+49 000000000";
-        private string email = "test@gmail.com";
         private string version = "Version 1.0.1";
-
-        public string MemberId;
-
+        private bool isDarkThemeActive;
         private Member currentUser;
-        public Command OnPostsCommand { get; }
-        public Command OnFollowersCommand { get; }
-        public Command OnFollowingCommand { get; }
-        public Command DisplayImageCommand { get; }
         public Command PrivacyPolicyCommand { get; }
         public Command TermsOfUseCommand { get; }
         public Command WebsiteCommand { get; }
         public Command RateAppCommand { get; }
-        public Command OnMessageCommand { get; }
-        public Command OnSMSCommand { get; }
-        public Command OnCallCommand { get; }
 
-        public AboutViewModel(string memberId = null)
+
+        public AboutViewModel()
         {
             Title = "About";
-            MemberId = memberId;
+            isDarkThemeActive = false;
             currentUser = new Member();
-            OnPostsCommand = new Command(OnPosts);
-            OnFollowersCommand = new Command(OnFollowers);
-            OnFollowingCommand = new Command(OnFollowing);
-            DisplayImageCommand = new Command(OnDisplayImage);
             PrivacyPolicyCommand = new Command(OnPrivacyPolicy);
             TermsOfUseCommand = new Command(OnTermsOfUse);
             WebsiteCommand = new Command(OnWebsite);
             RateAppCommand = new Command(OnRateApp);
-            OnMessageCommand = new Command(OnMessage);
-            OnSMSCommand = new Command(OnSMS);
-            OnCallCommand = new Command(OnCall);
-            LoadUserInfos(MemberId);
+
+            LoadUserInfos();
         }
 
         private async void OnRateApp(object obj)
@@ -60,9 +44,6 @@ namespace KenffySoft.Bloggy.ViewModels
         private async void OnWebsite(object obj)
         {
             await Browser.OpenAsync("https://aka.ms/xamarin-quickstart");
-            //var msg = "Currently not available!!!";
-            //await Application.Current.MainPage.DisplayAlert("Rate the Application", msg, "Cancel");
-            //return;
         }
 
         private async void OnTermsOfUse(object obj)
@@ -85,17 +66,6 @@ namespace KenffySoft.Bloggy.ViewModels
             set => SetProperty(ref currentUser, value);
         }
 
-        public string Email
-        {
-            get => email;
-            set => SetProperty(ref email, value);
-        }
-
-        public string Number
-        {
-            get => number;
-            set => SetProperty(ref number, value);
-        }
 
         public string Version
         {
@@ -103,51 +73,13 @@ namespace KenffySoft.Bloggy.ViewModels
             set => SetProperty(ref version, value);
         }
 
-        private async void OnPosts(object obj)
+        public bool IsDarkThemeActive
         {
-            var detail = new PostsPage() { BindingContext = new PostViewModel(MemberId) };
-            await Shell.Current.Navigation.PushAsync(detail); //new BloggyDetailPage(CurrentUser, 0)
+            get => isDarkThemeActive;
+            set => SetProperty(ref isDarkThemeActive, value);
         }
 
-        private async void OnFollowers(object obj)
-        {
-            var detail = new FollowersPage(){BindingContext = new FollowersViewModel(MemberId)};
-            await Shell.Current.Navigation.PushAsync(detail); //new BloggyDetailPage(CurrentUser, 1)
-        }
-
-        private async void OnFollowing(object obj)
-        {
-            var detail = new FollowingPage(){BindingContext = new FollowingViewModel(MemberId)};
-            await Shell.Current.Navigation.PushAsync(detail); //new BloggyDetailPage(CurrentUser, 1)
-        }
-
-        private async void OnDisplayImage(object obj)
-        {
-            if (string.IsNullOrEmpty(CurrentUser.ProfileImage))
-                return;
-
-            var imagepage = new ImagePage { BindingContext = new ImageViewModel(CurrentUser.ProfileImage) };
-            await Shell.Current.Navigation.PushModalAsync(imagepage);
-        }
-
-        private void OnMessage(object obj)
-        {
-            var message = new EmailMessage("", "", Email);
-            Xamarin.Essentials.Email.ComposeAsync(message);
-        }
-
-        private void OnSMS(object obj)
-        {
-            var message = new SmsMessage("", Number);
-            Sms.ComposeAsync(message);
-        }
-
-        private void OnCall(object obj)
-        {
-            PhoneDialer.Open(Number);
-        }
-
-        private async void LoadUserInfos(string memberId = null)
+        private async void LoadUserInfos()
         {
             if (BloggyConstant.CheckConnectivity() == false)
             {
@@ -158,33 +90,7 @@ namespace KenffySoft.Bloggy.ViewModels
 
             try
             {
-                if (string.IsNullOrEmpty(memberId))
-                {
-                    CurrentUser = await BloggyServices.GetAuthMemberAsync();
-                }  
-                else
-                {
-                    CurrentUser = await BloggyServices.GetMemberByIdAsync(memberId);
-                }
-
-                if (CurrentUser != null)
-                {
-                    MemberId = CurrentUser.Id;
-                    Title = CurrentUser.Name;
-                    //Title = "About " + CurrentUser.Name;
-                    Version = CurrentUser.Name + ": Version 1.0.0";
-
-                    if (!string.IsNullOrEmpty(CurrentUser.PhoneNumber))
-                    {
-                        Number = CurrentUser.PhoneNumber;
-                    }
-
-                    if (!string.IsNullOrEmpty(CurrentUser.Email))
-                    {
-                        Email = CurrentUser.Email;
-                    }
-                }
-
+                CurrentUser = await BloggyServices.GetAuthMemberAsync();
             }
             catch (Exception ex)
             {

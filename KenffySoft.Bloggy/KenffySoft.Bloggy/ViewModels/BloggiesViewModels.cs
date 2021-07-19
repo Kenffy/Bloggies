@@ -2,10 +2,7 @@
 using KenffySoft.Bloggy.Services;
 using KenffySoft.Bloggy.Views;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -23,8 +20,6 @@ namespace KenffySoft.Bloggy.ViewModels
         public Command FollowCommand { get; }
         public Command RefreshCommand { get; }
         public Command LoadMoreCommand { get; }
-
-        public Command ConnectionsCommand { get; }
         public Command<object> SelectedCommand { get; }
 
         public BloggiesViewModels()
@@ -33,7 +28,6 @@ namespace KenffySoft.Bloggy.ViewModels
             bloggies = new ObservableCollection<Models.Bloggy>();
             RefreshCommand = new Command(Refresh);
             LoadMoreCommand = new Command(LoadMore);
-            ConnectionsCommand = new Command(OnConnections);
             FollowCommand = new Command<object>(OnFollowBloggy);
             SelectedCommand = new Command<object>(OnSelected);
             LoadAllBloggies();
@@ -80,7 +74,6 @@ namespace KenffySoft.Bloggy.ViewModels
                 {
                     Bloggies.Add(bloggy);
                 }
-                //Bloggies = new ObservableCollection<Models.Bloggy>(result);
             }
             catch(Exception ex)
             {
@@ -149,40 +142,8 @@ namespace KenffySoft.Bloggy.ViewModels
 
             //await Shell.Current.GoToAsync(nameof(ProfilePage));
             //await Shell.Current.Navigation.PushAsync(new ProfilePage());
-            var profileview = new AboutPage() { BindingContext = new AboutViewModel(previous.Id) };
+            var profileview = new ProfilePage() { BindingContext = new ProfileViewModel(previous.Id) };
             await Shell.Current.Navigation.PushAsync(profileview);
-
-            //TO DO: Perform this function
-            // Add your code here...
-
-            //var bloggy = obj as Models.Bloggy;
-            //SelectedBloggy = null;
-            //if (bloggy == null)
-            //    return;
-
-            //SelectedBloggy = null;
-        }
-
-        //private async Task Refresh()
-        //{
-        //    IsBusy = true;
-
-        //    await Task.Delay(2000);
-
-        //    Bloggies.Clear();
-        //    LoadAllBloggies();
-
-        //    IsBusy = false;
-        //}
-
-        
-
-        private async void OnConnections(object obj)
-        {
-            await Shell.Current.GoToAsync(nameof(ConnectionsPage));
-
-            // This will pop the current page off the navigation stack
-            //await Shell.Current.GoToAsync("..");
         }
     }
 }

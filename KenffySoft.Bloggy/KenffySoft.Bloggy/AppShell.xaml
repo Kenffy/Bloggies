@@ -4,6 +4,7 @@
        xmlns:local="clr-namespace:KenffySoft.Bloggy.Views"
        xmlns:users="clr-namespace:KenffySoft.Bloggy.Views.Users"
        xmlns:helpers="clr-namespace:KenffySoft.Bloggy.Helpers"
+       xmlns:profile="clr-namespace:KenffySoft.Bloggy.Views.Profile"
        Title="KenffySoft.Bloggy"
        x:Class="KenffySoft.Bloggy.AppShell">
 
@@ -93,8 +94,19 @@
                 <FontImageSource FontFamily="FASolid"
                                      Glyph="{x:Static helpers:BloggyIcon.User}"/>
             </Tab.Icon>
+
             <ShellContent
-                ContentTemplate="{DataTemplate local:SettingsPage}"/>
+                Title="PROFILE"
+                ContentTemplate="{DataTemplate profile:ProfileOverviewPage}"/>
+            <!--<ShellContent
+                Title="ACTIVITIES"
+                ContentTemplate="{DataTemplate profile:ProfileActivitiesPage}"/>-->
+            <ShellContent
+                Title="ABOUT"
+                ContentTemplate="{DataTemplate profile:ProfileOthersPage}"/>
+            
+            <!--<ShellContent
+                ContentTemplate="{DataTemplate local:SettingsPage}"/>-->
 
             <!--<ShellContent
                 ContentTemplate="{DataTemplate local:ProfilePage}"/>-->

@@ -98,27 +98,38 @@
                                 Orientation="Vertical">
                                 <BindableLayout.ItemTemplate>
                                     <DataTemplate>
-                                        <StackLayout Orientation="Horizontal" Margin="0,5">
 
-                                            <views:AvatarView Text="{Binding Avatar}"  Source="{Binding ProfileImage}"  
-                                                                      Size="50" Color="{Binding AvatarColor}" TextColor="White" 
-                                                                      VerticalOptions="StartAndExpand" Margin="8"/>
+                                        <Grid Margin="2" ColumnDefinitions="Auto, *" ColumnSpacing="5">
 
-                                            <Frame Padding="5" Margin="0" CornerRadius="10"
+                                            <views:AvatarView Grid.Column="0"
+                                                Text="{Binding Avatar}"  Source="{Binding ProfileImage}"  
+                                                Size="50" Color="{Binding AvatarColor}" 
+                                                VerticalOptions="StartAndExpand" Margin="8,0,0,0"/>
+
+                                            <Frame Grid.Column="1" Padding="0" Margin="0,0,10,0" CornerRadius="10"
                                                    VerticalOptions="StartAndExpand"
                                                    HorizontalOptions="StartAndExpand"
                                                    BackgroundColor="#ecf0f1">
-                                                <StackLayout>
-                                                    <Label Text="{Binding MemberName}" VerticalOptions="CenterAndExpand"
-                                                            FontSize="Medium" FontAttributes="Bold">
-                                                    </Label>
-
-                                                    <Label Text="{Binding Body}" FontSize="Body" HorizontalOptions="StartAndExpand"/>
-                                                    <Label Text="{Binding PostedAt}" FontSize="Small" TextColor="DarkGray"/>
+                                                <StackLayout Margin="5">
+                                                    <Grid Margin="5,0,5,0" ColumnDefinitions="Auto, *" ColumnSpacing="10">
+                                                        <Label Grid.Column="0" Text="{Binding MemberName}" 
+                                                               VerticalOptions="Start"
+                                                            FontSize="Medium" FontAttributes="Bold"/>
+                                                        <Label Grid.Column="1" Text="{Binding PostedAt}" 
+                                                               FontSize="14" TextColor="DarkGray"
+                                                               VerticalOptions="Start"
+                                                               HorizontalOptions="EndAndExpand"/>
+                                                    </Grid>
+                                                    
+                                                    <Label Text="{Binding Body}"
+                                                           Margin="5,0,5,0"
+                                                           FontSize="Body"/>
+                                                    
                                                 </StackLayout>
                                             </Frame>
 
-                                        </StackLayout>
+                                        </Grid>
+                                        
                                     </DataTemplate>
                                 </BindableLayout.ItemTemplate>
                             </StackLayout>
@@ -128,9 +139,33 @@
 
             </ScrollView>
 
-            <StackLayout VerticalOptions="EndAndExpand" BackgroundColor="#FAF8FA">
+            <StackLayout VerticalOptions="EndAndExpand" BackgroundColor="LightGray">
                 <!--Comment Input-->
-                <StackLayout Grid.Row="2" VerticalOptions="EndAndExpand">
+                <Grid Margin="5,5,0,10" ColumnDefinitions="*, Auto" ColumnSpacing="5"
+                      RowDefinitions="42">
+                    <Frame Grid.Column="0"
+                           Padding="0"
+                           CornerRadius="20"
+                           HasShadow="False"
+                           >
+                        <Editor Margin="15,0,15,0"
+                                    Placeholder="Write a comment..." FontSize="Medium"
+                                    VerticalOptions="Center" 
+                                    Text="{Binding Comment.Body, Mode=TwoWay}"/>
+                        
+                    </Frame>
+
+                    <Image Grid.Column="1" Margin="3" VerticalOptions="Center"
+                                    HorizontalOptions="EndAndExpand" Source="send.png" 
+                                    WidthRequest="35"
+                                    HeightRequest="35"
+                                    Aspect="AspectFit">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SaveCommand}"/>
+                        </Image.GestureRecognizers>
+                    </Image>
+                </Grid>
+                <!--<StackLayout Grid.Row="2" VerticalOptions="EndAndExpand">
                     <Grid Margin="2">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -167,7 +202,7 @@
                         
                     </Grid>
 
-                </StackLayout>
+                </StackLayout>-->
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>

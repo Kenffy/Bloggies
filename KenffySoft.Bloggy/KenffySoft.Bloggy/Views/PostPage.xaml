@@ -77,7 +77,8 @@
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="Auto"/>
-                                                    </Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
                                                     <Image Source="{Binding LikeImage}" VerticalOptions="CenterAndExpand"
                                                                        HeightRequest="20" Aspect="AspectFit" Grid.Column="0"/>
                                                     <Label Text="{Binding NumLikes}" Grid.Column="1" 
@@ -88,7 +89,9 @@
                                                     <Label Text="{Binding NumComments}" Grid.Column="3" 
                                                            VerticalOptions="CenterAndExpand"
                                                            TextColor="{StaticResource TextPrimary}"/>
-                                                </Grid>
+                                                    <Image Source="{Binding VisibilityStatus}" VerticalOptions="CenterAndExpand" Margin="15,0,0,0"
+                                                                    HeightRequest="20" Aspect="AspectFit" Grid.Column="4"/>
+                                                    </Grid>
                                             </StackLayout>
                                         </StackLayout>
                                     </Grid>

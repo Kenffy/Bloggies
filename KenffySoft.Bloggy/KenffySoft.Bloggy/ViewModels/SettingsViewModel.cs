@@ -2,6 +2,7 @@
 using KenffySoft.Bloggy.Models;
 using KenffySoft.Bloggy.Services;
 using KenffySoft.Bloggy.Views;
+using KenffySoft.Bloggy.Views.Users;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,12 +14,22 @@ namespace KenffySoft.Bloggy.ViewModels
     public class SettingsViewModel : BaseViewModel
     {
         private string settingsTitle;
+        private string number = "+49 000000000";
+        private string email = "test@gmail.com";
         private Member currentUser;
         public Command EditProfileCommand { get; }
         public Command ResetPasswordCommand { get; }
         public Command AboutCommand { get; }
         public Command LogOutCommand { get; }
         public Command DisplayImageCommand { get; }
+        public Command OnMessageCommand { get; }
+        public Command OnSMSCommand { get; }
+        public Command OnCallCommand { get; }
+        public Command WebsiteCommand { get; }
+
+        public Command OnPostsCommand { get; }
+        public Command OnFollowersCommand { get; }
+        public Command OnFollowingCommand { get; }
 
         public SettingsViewModel()
         {
@@ -28,6 +39,13 @@ namespace KenffySoft.Bloggy.ViewModels
             EditProfileCommand = new Command(OnEditProfile);
             DisplayImageCommand = new Command(OnDisplayImage);
             ResetPasswordCommand = new Command(OnResetPassword);
+            OnMessageCommand = new Command(OnMessage);
+            OnSMSCommand = new Command(OnSMS);
+            OnCallCommand = new Command(OnCall);
+            WebsiteCommand = new Command(OnWebsite);
+            OnPostsCommand = new Command(OnPosts);
+            OnFollowersCommand = new Command(OnFollowers);
+            OnFollowingCommand = new Command(OnFollowing);
             LoadUserInfos();
         }
 
@@ -41,6 +59,18 @@ namespace KenffySoft.Bloggy.ViewModels
         {
             get => settingsTitle;
             set => SetProperty(ref settingsTitle, value);
+        }
+
+        public string Email
+        {
+            get => email;
+            set => SetProperty(ref email, value);
+        }
+
+        public string Number
+        {
+            get => number;
+            set => SetProperty(ref number, value);
         }
 
         private async void OnLogOut(object obj)
@@ -95,7 +125,7 @@ namespace KenffySoft.Bloggy.ViewModels
             await Shell.Current.Navigation.PushModalAsync(imagepage);
         }
 
-        private async void LoadUserInfos()
+        private async void LoadUserInfos(string memberId = null)
         {
             if (BloggyConstant.CheckConnectivity() == false)
             {
@@ -106,12 +136,24 @@ namespace KenffySoft.Bloggy.ViewModels
 
             try
             {
+
                 CurrentUser = await BloggyServices.GetAuthMemberAsync();
-                SettingsTitle = "Settings " + CurrentUser.Name;
-                //if (string.IsNullOrEmpty(CurrentUser.ProfileImage))
-                //{
-                //    CurrentUser.ProfileImage = "defaultprofile.png";
-                //}
+
+                if (CurrentUser != null)
+                {
+                    //Title = CurrentUser.Name;
+                    Title = "Settings " + CurrentUser.Name;
+
+                    if (!string.IsNullOrEmpty(CurrentUser.PhoneNumber))
+                    {
+                        Number = CurrentUser.PhoneNumber;
+                    }
+
+                    if (!string.IsNullOrEmpty(CurrentUser.Email))
+                    {
+                        Email = CurrentUser.Email;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -120,6 +162,49 @@ namespace KenffySoft.Bloggy.ViewModels
                 await Application.Current.MainPage.DisplayAlert("Error", msg, "Cancel");
                 return;
             }
+        }
+
+        private void OnMessage(object obj)
+        {
+            var message = new EmailMessage("", "", Email);
+            Xamarin.Essentials.Email.ComposeAsync(message);
+        }
+
+        private void OnSMS(object obj)
+        {
+            var message = new SmsMessage("", Number);
+            Sms.ComposeAsync(message);
+        }
+
+        private void OnCall(object obj)
+        {
+            PhoneDialer.Open(Number);
+        }
+
+        private async void OnWebsite(object obj)
+        {
+            await Browser.OpenAsync("https://aka.ms/xamarin-quickstart");
+            //var msg = "Currently not available!!!";
+            //await Application.Current.MainPage.DisplayAlert("Rate the Application", msg, "Cancel");
+            //return;
+        }
+
+        private async void OnPosts(object obj)
+        {
+            var detail = new PostsPage() { BindingContext = new PostViewModel(CurrentUser.Id) };
+            await Shell.Current.Navigation.PushAsync(detail); //new BloggyDetailPage(CurrentUser, 0)
+        }
+
+        private async void OnFollowers(object obj)
+        {
+            var detail = new FollowersPage() { BindingContext = new FollowersViewModel(CurrentUser.Id) };
+            await Shell.Current.Navigation.PushAsync(detail); //new BloggyDetailPage(CurrentUser, 1)
+        }
+
+        private async void OnFollowing(object obj)
+        {
+            var detail = new FollowingPage() { BindingContext = new FollowingViewModel(CurrentUser.Id) };
+            await Shell.Current.Navigation.PushAsync(detail); //new BloggyDetailPage(CurrentUser, 1)
         }
 
         private async void ResetPassword(object sender, EventArgs e)

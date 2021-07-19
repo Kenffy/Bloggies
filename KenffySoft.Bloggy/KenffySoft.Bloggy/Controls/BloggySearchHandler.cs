@@ -79,7 +79,7 @@ namespace KenffySoft.Bloggy.Controls
             var bloggy = item as Models.Bloggy;
             //await Shell.Current.GoToAsync($"{nameof(PostDetailPage)}?{nameof(PostDetailViewModel.PostId)}={post.Id}");
 
-            var profileview = new AboutPage() { BindingContext = new AboutViewModel(bloggy.Id) };
+            var profileview = new ProfilePage() { BindingContext = new ProfileViewModel(bloggy.Id) };
             await Shell.Current.Navigation.PushAsync(profileview);
         }
     }

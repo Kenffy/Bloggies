@@ -1,12 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Application xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
              x:Class="KenffySoft.Bloggy.App">
     <!--
         Define global resources and styles here, that apply to all pages in your app.
     -->
     <Application.Resources>
         <ResourceDictionary>
+            <Color x:Key="WindowsBackgroundColor">#E7E7EE</Color>
+            <Color x:Key="WindowsBackgroundDarkColor">#E7E7EE</Color>
+            
             <Color x:Key="Background">#E7E7EE</Color>
             <Color x:Key="TabBarBackground">#FAF8FA</Color>
             <Color x:Key="CardBackground">#FFFEFF</Color>
@@ -24,10 +28,10 @@
             <Color x:Key="TextPrimary">#25272C</Color>
             <Color x:Key="TextFeatured">#FFFFFF</Color>
             <Color x:Key="TextBlueFeatured">#3498db</Color>
-            <!--<Style x:Key="TabViewItemStyle" TargetType="xct:TabViewItem">
+            <Style x:Key="TabViewItemStyle" TargetType="xct:TabViewItem">
                 <Setter Property="TextColor" Value="{StaticResource TextSecondary}" />
                 <Setter Property="TextColorSelected" Value="{StaticResource Accent}" />
-            </Style>-->
+            </Style>
 
             <Style ApplyToDerivedTypes="true" TargetType="NavigationPage">
                 <Setter Property="BarBackgroundColor" Value="{StaticResource TabBarBackground}"/>
@@ -35,20 +39,20 @@
             </Style>
 
             <ControlTemplate x:Key="TabItemTemplate">
-                <Grid RowSpacing="0" VerticalOptions="Center"
-                      RowDefinitions="Auto,Auto">
-                    <Image
+                <Grid RowSpacing="0" VerticalOptions="Center">
+                    <!--<Image
                         Grid.Row="0"
                         Margin="6"
                         HeightRequest="36"
                         HorizontalOptions="Center"
                         Source="{TemplateBinding CurrentIcon}"
                         VerticalOptions="Center"
-                        WidthRequest="36" />
+                        WidthRequest="36" 
+                        IsVisible="false"/>-->
                     <Label
-                        Grid.Row="1"
+                        Grid.Row="0"
                         FontSize="{TemplateBinding FontSize}"
-                        HorizontalOptions="Center"
+                        HorizontalOptions="CenterAndExpand"
                         Text="{TemplateBinding Text}"
                         TextColor="{TemplateBinding CurrentTextColor}" />
                 </Grid>
